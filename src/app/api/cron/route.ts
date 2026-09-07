@@ -9,8 +9,10 @@ export const maxDuration = 60;
 /**
  * Cron horario (carrito abandonado + autocancelación de pedidos vencidos).
  * Reemplaza el `scheduled()` de Cloudflare Workers (blueprint M4 §9). Disparado
- * por un workflow de GitHub Actions programado (Vercel Cron en Hobby permite
- * solo 1 corrida/día, insuficiente para la cadencia horaria actual).
+ * por Vercel Cron nativo (`vercel.json`, requiere plan Pro — Hobby limita a
+ * 1 corrida/día, insuficiente para la cadencia horaria actual). Vercel agrega
+ * automáticamente el header `Authorization: Bearer $CRON_SECRET` cuando esa
+ * env var está seteada en el proyecto.
  */
 export async function GET(request: Request): Promise<NextResponse> {
   const secret = process.env.CRON_SECRET;
