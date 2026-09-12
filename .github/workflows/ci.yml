@@ -44,24 +44,17 @@ jobs:
           DATABASE_URL: postgresql://placeholder
           DIRECT_URL: postgresql://placeholder
 
-      # Verifica el build del Worker (OpenNext) en Linux — donde los symlinks de
-      # standalone funcionan (en Windows local requiere Developer Mode).
-      - name: Build worker (Cloudflare / OpenNext)
-        run: pnpm build:worker
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder
-          DATABASE_URL: postgresql://placeholder
-          DIRECT_URL: postgresql://placeholder
-
-  # Deploy a producción (Cloudflare Workers) solo al pushear a main, después de que
-  # `quality` pase. El build corre en Linux, donde NO se da el bug de esbuild con
-  # `cloudflare:sockets` que rompe el build en Windows. Esto reemplaza el deploy
-  # manual local (que no se puede hacer desde Windows de forma confiable).
+  # Deploy a producción (Vercel, cuenta laza223) solo al pushear a main, después
+  # de que `quality` pase. Usa Vercel CLI + token (en vez de la integración
+  # nativa Git de Vercel) para que el deploy quede condicionado al gate de CI,
+  # no disparado directo por Vercel en cada push.
   deploy:
     needs: quality
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -74,19 +67,18 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
 
-      # `pnpm run deploy` = build:worker && wrangler deploy.
-      # - build:worker hornea los NEXT_PUBLIC_* reales desde .env.production
-      #   (commiteado, solo valores públicos), no placeholders.
-      # - wrangler deploy sube el Worker. Los secretos del Worker
-      #   (MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET, DATABASE_URL, etc.) ya están
-      #   seteados con `wrangler secret put` y PERSISTEN entre deploys.
-      - name: Build worker & deploy to Cloudflare
-        run: pnpm run deploy
-        env:
-          # next build no toca la DB real; placeholders para que no falle.
-          DATABASE_URL: postgresql://placeholder
-          DIRECT_URL: postgresql://placeholder
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # Trae config/env del proyecto de Vercel (VERCEL_ORG_ID/VERCEL_PROJECT_ID
+      # identifican el proyecto; los secrets de runtime — DATABASE_URL,
+      # MP_ACCESS_TOKEN, CRON_SECRET, etc. — ya están cargados en Vercel y
+      # PERSISTEN entre deploys, igual que antes con `wrangler secret put`).
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build (Vercel)
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

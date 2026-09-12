@@ -46,9 +46,8 @@ coverage/
 .turbo/
 *.pem
 
-# Cloudflare (OpenNext + Wrangler)
-.open-next/
-.wrangler/
+# Vercel
+.vercel/
 
 # Claude agent temporary files
 .claude/
