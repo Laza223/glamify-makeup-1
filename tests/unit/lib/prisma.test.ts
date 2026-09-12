@@ -1,12 +1,17 @@
 import { describe, it, expect, afterEach, beforeEach, vi } from "vitest";
 
-// Guarda de regresión del singleton de Prisma (patrón estándar Next.js/Vercel,
+// Guarda de regresión del singleton PEREZOSO de Prisma (patrón Next.js/Vercel,
 // post-migración de Cloudflare Workers): un solo cliente por proceso, cacheado
-// en `globalThis`, construido de forma perezosa desde `DATABASE_URL`.
+// en `globalThis`. Perezoso a propósito: `next build` importa los Route
+// Handlers para "Collecting page data" sin ejecutarlos — si el cliente se
+// construyera eager al importar el módulo, un build sin DATABASE_URL
+// disponible en ese paso explota aunque ninguna ruta la use todavía (pasó de
+// verdad en el primer deploy a Vercel). El Proxy solo construye el cliente
+// real recién en el primer acceso a una propiedad.
 
 const DUMMY_URL = "postgresql://user:pass@localhost:5432/glamify";
 
-describe("lib/prisma — cliente singleton (Vercel/Node)", () => {
+describe("lib/prisma — singleton perezoso (Vercel/Node)", () => {
   const originalUrl = process.env.DATABASE_URL;
 
   beforeEach(() => {
@@ -15,6 +20,12 @@ describe("lib/prisma — cliente singleton (Vercel/Node)", () => {
   afterEach(() => {
     if (originalUrl === undefined) delete process.env.DATABASE_URL;
     else process.env.DATABASE_URL = originalUrl;
+  });
+
+  it("importar el módulo no explota sin DATABASE_URL (perezoso, no eager)", async () => {
+    delete process.env.DATABASE_URL;
+    const mod = await import("@/lib/prisma");
+    expect(mod.prisma).toBeDefined();
   });
 
   it("importar el módulo expone un cliente con los delegados/métodos esperados", async () => {
