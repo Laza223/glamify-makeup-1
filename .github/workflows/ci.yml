@@ -44,10 +44,10 @@ jobs:
           DATABASE_URL: postgresql://placeholder
           DIRECT_URL: postgresql://placeholder
 
-  # Deploy a producción (Vercel) solo al pushear a main, después de que `quality`
-  # pase. Usa Vercel CLI + token (en vez de la integración nativa Git de Vercel)
-  # porque el proyecto vive en una cuenta de Vercel separada de este repo de
-  # GitHub — así no hace falta darle acceso al repo a esa cuenta.
+  # Deploy a producción (Vercel, cuenta laza223) solo al pushear a main, después
+  # de que `quality` pase. Usa Vercel CLI + token (en vez de la integración
+  # nativa Git de Vercel) para que el deploy quede condicionado al gate de CI,
+  # no disparado directo por Vercel en cada push.
   deploy:
     needs: quality
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
