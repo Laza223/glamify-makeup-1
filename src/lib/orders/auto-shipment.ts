@@ -25,6 +25,7 @@ interface StoredAddress {
   province?: string | null;
   street?: string;
   number?: string;
+  floorApt?: string | null;
   city?: string;
   agencyCode?: string | null;
 }
@@ -78,6 +79,7 @@ export function buildImportInput(order: AutoShipmentOrder): { input: MicorreoShi
       address: {
         streetName: a.street.trim(),
         streetNumber: a.number.trim(),
+        ...(a.floorApt?.trim() ? { apartment: a.floorApt.trim() } : {}),
         city: a.city.trim(),
         province: a.province.trim(),
         postalCode: a.cp.trim(),

@@ -29,6 +29,13 @@ describe("buildImportInput", () => {
     });
   });
 
+  it("domicilio con piso/depto: lo pasa como apartment", () => {
+    const r = buildImportInput(baseOrder({
+      shippingAddress: { cp: "6700", province: "Buenos Aires", street: "Las Heras", number: "1676", floorApt: " 3 B ", city: "Lujan" },
+    }));
+    expect(r).toMatchObject({ input: { address: { streetNumber: "1676", apartment: "3 B" } } });
+  });
+
   it("sucursal con agencyCode: arma input con agency (sin address)", () => {
     const r = buildImportInput(baseOrder({
       shippingMethod: "sucursal",
