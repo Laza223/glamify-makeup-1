@@ -325,6 +325,20 @@ export function provinceCode(name: string | null | undefined): string | null {
   return PROVINCE_CODES[key] ?? null;
 }
 
+/**
+ * Teléfono en el formato que espera MiCorreo: sólo dígitos, número nacional sin
+ * código de país (54), sin el 9 de celular internacional ni el 0 de larga
+ * distancia (ej. "+54 9 11 3018 1532" → "1130181532"). Mandarlo crudo hacía que
+ * MiCorreo lo cortara mal en el panel. Devuelve null si no queda ningún dígito.
+ */
+export function normalizeArPhone(raw: string | null | undefined): string | null {
+  let digits = (raw ?? "").replace(/\D/g, "");
+  if (digits.startsWith("54") && digits.length >= 12) digits = digits.slice(2);
+  if (digits.startsWith("9") && digits.length === 11) digits = digits.slice(1);
+  if (digits.startsWith("0")) digits = digits.slice(1);
+  return digits || null;
+}
+
 export interface MicorreoShipmentInput {
   /** ID único del pedido de nuestro lado (orderNumber). Da idempotencia. */
   extOrderId: string;
@@ -336,6 +350,8 @@ export interface MicorreoShipmentInput {
   address?: {
     streetName: string;
     streetNumber: string;
+    /** Piso/depto tal cual lo escribió la clienta (el checkout lo pide en un solo campo). */
+    apartment?: string | null;
     city: string;
     province: string;
     postalCode: string;
@@ -389,6 +405,9 @@ export async function createMicorreoShipment(
     shipping.address = {
       streetName: a.streetName.trim(),
       streetNumber: a.streetNumber.trim(),
+      // Va entero en `apartment`: el checkout junta piso y depto en un campo libre
+      // ("A", "3 B", "PB 2") y partirlo adivinando perdería datos.
+      ...(a.apartment?.trim() ? { apartment: a.apartment.trim() } : {}),
       city: a.city.trim(),
       provinceCode: code,
       postalCode: a.postalCode.trim(),
@@ -401,6 +420,8 @@ export async function createMicorreoShipment(
   shipping.length = DEFAULT_ITEM_CM.length;
   shipping.width = DEFAULT_ITEM_CM.width;
   shipping.height = DEFAULT_ITEM_CM.height;
+
+  const phone = normalizeArPhone(input.recipient.phone);
 
   try {
     const auth = await getAuth(env, fetchImpl, nowMs);
@@ -419,7 +440,8 @@ export async function createMicorreoShipment(
         recipient: {
           name: input.recipient.name.trim(),
           email: input.recipient.email.trim(),
-          ...(input.recipient.phone ? { phone: input.recipient.phone.trim() } : {}),
+          // El checkout pide un solo teléfono (casi siempre celular): va en los dos campos.
+          ...(phone ? { phone, cellPhone: phone } : {}),
         },
         shipping,
       }),

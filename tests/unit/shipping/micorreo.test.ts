@@ -205,6 +205,58 @@ describe("createMicorreoShipment", () => {
     });
   });
 
+  it("teléfono: lo manda sólo con dígitos y sin +54 / 9 / 0, como phone y cellPhone", async () => {
+    const casos: Array<[string, string]> = [
+      ["+54 9 11 3018 1532", "1130181532"],
+      ["+54 9 1130181532", "1130181532"],
+      ["54 11 4455-6677", "1144556677"],
+      ["011 3018-1532", "1130181532"],
+      ["1144556677", "1144556677"],
+    ];
+    for (const [raw, esperado] of casos) {
+      __resetMicorreoAuthCache();
+      let sent: { recipient: Record<string, unknown> } | null = null;
+      const fakeFetch = (async (url: string, init: RequestInit) => {
+        const pre = authOk(url);
+        if (pre) return pre;
+        sent = JSON.parse(init.body as string);
+        return jsonRes({ createdAt: null });
+      }) as unknown as typeof fetch;
+
+      await createMicorreoShipment({ ...baseInput, recipient: { ...baseInput.recipient, phone: raw } }, env, fakeFetch, 1000);
+      expect(sent!.recipient).toMatchObject({ phone: esperado, cellPhone: esperado });
+    }
+  });
+
+  it("domicilio con piso/depto: manda apartment; sin piso/depto no manda la clave", async () => {
+    const bodies: Array<{ shipping: { address: Record<string, unknown> } }> = [];
+    const fakeFetch = (async (url: string, init: RequestInit) => {
+      const pre = authOk(url);
+      if (pre) return pre;
+      bodies.push(JSON.parse(init.body as string));
+      return jsonRes({ createdAt: null });
+    }) as unknown as typeof fetch;
+
+    await createMicorreoShipment({ ...baseInput, address: { ...baseInput.address!, apartment: " A " } }, env, fakeFetch, 1000);
+    await createMicorreoShipment(baseInput, env, fakeFetch, 1000);
+    expect(bodies[0].shipping.address.apartment).toBe("A");
+    expect(bodies[1].shipping.address).not.toHaveProperty("apartment");
+  });
+
+  it("teléfono vacío o sin dígitos: no manda phone ni cellPhone", async () => {
+    let sent: { recipient: Record<string, unknown> } | null = null;
+    const fakeFetch = (async (url: string, init: RequestInit) => {
+      const pre = authOk(url);
+      if (pre) return pre;
+      sent = JSON.parse(init.body as string);
+      return jsonRes({ createdAt: null });
+    }) as unknown as typeof fetch;
+
+    await createMicorreoShipment({ ...baseInput, recipient: { ...baseInput.recipient, phone: " - " } }, env, fakeFetch, 1000);
+    expect(sent!.recipient.phone).toBeUndefined();
+    expect(sent!.recipient.cellPhone).toBeUndefined();
+  });
+
   it("sucursal sin agencia: error claro, sin tocar la red", async () => {
     let called = false;
     const fakeFetch = (async () => {
