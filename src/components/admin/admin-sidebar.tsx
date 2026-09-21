@@ -12,6 +12,8 @@ import {
   ShoppingCart,
   Star,
   Sparkles,
+  RotateCcw,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,12 +26,14 @@ interface AdminNavItem {
 
 const ITEMS: AdminNavItem[] = [
   { href: "/admin", label: "Inicio", icon: LayoutDashboard },
+  { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
   { href: "/admin/productos", label: "Productos", icon: Package },
   { href: "/admin/categorias", label: "Categorías", icon: FolderTree },
   { href: "/admin/combos", label: "Combos", icon: Layers },
   { href: "/admin/cupones", label: "Cupones", icon: Ticket },
-  { href: "/admin/pedidos", label: "Pedidos", icon: ShoppingCart },
   { href: "/admin/resenas", label: "Reseñas", icon: Star },
+  { href: "/admin/arrepentimiento", label: "Arrepentimiento", icon: RotateCcw },
+  { href: "/admin/ajustes", label: "Ajustes", icon: Settings },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -120,9 +124,14 @@ export function AdminSidebar({
                 {initials}
               </span>
               <div className="min-w-0">
-                <p className="text-xs font-semibold text-foreground">Conectada</p>
+                <p className="text-xs font-semibold text-foreground">
+                  Conectada
+                </p>
                 {email ? (
-                  <p className="truncate text-[11px] text-muted-foreground" title={email}>
+                  <p
+                    className="truncate text-[11px] text-muted-foreground"
+                    title={email}
+                  >
                     {email}
                   </p>
                 ) : null}
@@ -138,29 +147,33 @@ export function AdminSidebar({
         aria-label="Navegación del panel"
         className="fixed inset-x-0 bottom-0 z-30 border-t border-border/70 bg-card/90 backdrop-blur md:hidden"
       >
-        <ul className="grid grid-cols-7">
+        <ul className="no-scrollbar flex items-center justify-between overflow-x-auto px-2 py-1">
           {ITEMS.map((item) => {
             const active = isActive(pathname, item.href);
             const Icon = item.icon;
             return (
-              <li key={item.href}>
+              <li key={item.href} className="min-w-[64px] shrink-0">
                 <Link
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-16 flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors",
-                    active ? "text-primary" : "text-muted-foreground",
+                    "flex h-16 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium transition-colors",
+                    active ? "font-bold text-primary" : "text-muted-foreground",
                   )}
                 >
                   <span
                     className={cn(
                       "grid size-8 place-items-center rounded-full transition-colors",
-                      active ? "bg-primary/12 text-primary" : "text-muted-foreground",
+                      active
+                        ? "bg-primary/12 text-primary"
+                        : "text-muted-foreground",
                     )}
                   >
                     <Icon className="size-5" aria-hidden />
                   </span>
-                  {item.label}
+                  <span className="max-w-[62px] truncate text-center">
+                    {item.label}
+                  </span>
                 </Link>
               </li>
             );

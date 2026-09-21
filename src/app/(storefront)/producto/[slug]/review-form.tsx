@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PenLine } from "lucide-react";
+import { PenLine, Camera, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,41 +10,62 @@ import { RatingInput } from "@/components/ui/rating-stars";
 import { track } from "@/lib/analytics/track";
 import { createReviewAction } from "./review-actions";
 
-export function ReviewForm({ productId, slug, isLoggedIn }: { productId: string; slug: string; isLoggedIn: boolean }) {
+export function ReviewForm({
+  productId,
+  slug,
+  isLoggedIn,
+}: {
+  productId: string;
+  slug: string;
+  isLoggedIn: boolean;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [doneStatus, setDoneStatus] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError("La foto supera el límite de 5 MB.");
+        return;
+      }
+      setError(null);
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setPreviewUrl(null);
+    }
+  }
+
+  function removePhoto() {
+    setPreviewUrl(null);
+    const input = document.getElementById("rphoto") as HTMLInputElement | null;
+    if (input) input.value = "";
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setPending(true);
     const fd = new FormData(e.currentTarget);
-    const res = await createReviewAction({
-      productId,
-      slug,
-      rating: Number(fd.get("rating") ?? 0),
-      title: String(fd.get("title") ?? ""),
-      body: String(fd.get("body") ?? ""),
-      authorName: isLoggedIn ? undefined : String(fd.get("authorName") ?? ""),
-      website: String(fd.get("website") ?? ""),
-    });
+    const res = await createReviewAction(fd);
     setPending(false);
     if (res.ok) {
       setDoneStatus(res.status ?? "pending");
       track("review_submitted", { status: res.status });
     } else {
-      setError(res.error ?? "Error");
+      setError(res.error ?? "Ocurrió un error al enviar la reseña.");
     }
   }
 
   if (doneStatus) {
     return (
-      <p className="text-sm font-medium text-emerald-700 bg-emerald-50 rounded-xl p-3">
+      <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-700">
         {doneStatus === "approved"
-          ? "¡Muchas gracias por tu reseña! Ya está publicada."
-          : "¡Muchas gracias por tu reseña! Se publicará tras la moderación."}
+          ? "¡Muchas gracias por tu reseña! Ya está publicada en la tienda."
+          : "¡Muchas gracias por tu reseña! Se publicará en breve tras la moderación de la dueña."}
       </p>
     );
   }
@@ -57,7 +78,7 @@ export function ReviewForm({ productId, slug, isLoggedIn }: { productId: string;
           variant="outline"
           size="sm"
           onClick={() => setIsOpen(true)}
-          className="rounded-full text-xs font-semibold gap-1.5 hover:bg-secondary hover:text-primary"
+          className="gap-1.5 rounded-full text-xs font-semibold hover:bg-secondary hover:text-primary"
         >
           <PenLine className="size-3.5" />
           <span>Escribir reseña</span>
@@ -67,9 +88,17 @@ export function ReviewForm({ productId, slug, isLoggedIn }: { productId: string;
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3 rounded-2xl border border-border p-4 bg-white/90 animate-fade-up">
+    <form
+      onSubmit={onSubmit}
+      className="animate-fade-up space-y-4 rounded-2xl border border-border bg-white p-5 shadow-soft"
+    >
+      <input type="hidden" name="productId" value={productId} />
+      <input type="hidden" name="slug" value={slug} />
+
       <div className="flex items-center justify-between">
-        <p className="text-sm font-semibold text-foreground">Tu opinión sobre este producto</p>
+        <p className="text-sm font-bold text-foreground">
+          Tu opinión sobre este producto
+        </p>
         <button
           type="button"
           onClick={() => setIsOpen(false)}
@@ -78,28 +107,128 @@ export function ReviewForm({ productId, slug, isLoggedIn }: { productId: string;
           Cancelar
         </button>
       </div>
+
       <RatingInput name="rating" />
+
       {!isLoggedIn && (
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <Label htmlFor="rname">Tu nombre</Label>
-          <Input id="rname" name="authorName" required minLength={2} maxLength={60} autoComplete="name" />
+          <Input
+            id="rname"
+            name="authorName"
+            required
+            minLength={2}
+            maxLength={60}
+            autoComplete="name"
+          />
         </div>
       )}
-      <div className="space-y-1">
+
+      <div className="space-y-1.5">
         <Label htmlFor="rtitle">Título (opcional)</Label>
-        <Input id="rtitle" name="title" maxLength={120} />
+        <Input
+          id="rtitle"
+          name="title"
+          maxLength={120}
+          placeholder="¿Qué fue lo que más te gustó?"
+        />
       </div>
-      <div className="space-y-1">
+
+      <div className="space-y-1.5">
         <Label htmlFor="rbody">Tu experiencia</Label>
-        <Textarea id="rbody" name="body" required maxLength={2000} rows={3} />
+        <Textarea
+          id="rbody"
+          name="body"
+          required
+          maxLength={2000}
+          rows={3}
+          placeholder="Contanos qué te pareció la textura, pigmentación o duración..."
+        />
       </div>
-      {/* Honeypot anti-spam: oculto para humanos, los bots tienden a completarlo. */}
-      <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
+
+      {/* Subida de foto */}
+      <div className="space-y-2 pt-1">
+        <Label className="flex items-center justify-between text-xs font-semibold text-foreground">
+          <span>Foto del producto (opcional)</span>
+          <span className="text-[11px] font-normal text-muted-foreground">
+            Hasta 5 MB (PNG, JPG)
+          </span>
+        </Label>
+
+        {previewUrl ? (
+          <div className="relative inline-block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={previewUrl}
+              alt="Vista previa de la foto"
+              className="shadow-2xs size-20 rounded-xl border border-border/80 object-cover"
+            />
+            <button
+              type="button"
+              onClick={removePhoto}
+              className="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full bg-destructive text-white shadow-sm transition-transform hover:bg-destructive/90 active:scale-95"
+              aria-label="Eliminar foto"
+            >
+              <X className="size-3.5 stroke-[3]" />
+            </button>
+          </div>
+        ) : (
+          <div>
+            <label
+              htmlFor="rphoto"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border/90 bg-surface-alt/60 px-4 py-2.5 text-xs font-semibold text-foreground/80 transition-colors hover:border-primary/50 hover:bg-surface-alt"
+            >
+              <Camera className="size-4 text-primary" />
+              <span>Subir foto con el resultado</span>
+            </label>
+            <input
+              id="rphoto"
+              name="photo"
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/avif"
+              onChange={onFileChange}
+              className="hidden"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Honeypot anti-spam */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+        className="hidden"
+      />
+
       {!isLoggedIn && (
-        <p className="text-xs text-muted-foreground">Tu reseña se publica tras la revisión de la dueña.</p>
+        <p className="text-xs text-muted-foreground">
+          Tu reseña se publicará tras la moderación de la dueña.
+        </p>
       )}
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={pending}>{pending ? "Enviando…" : "Publicar reseña"}</Button>
+
+      {error && (
+        <p role="alert" className="text-sm font-medium text-destructive">
+          {error}
+        </p>
+      )}
+
+      <Button
+        type="submit"
+        disabled={pending}
+        className="w-full rounded-xl bg-primary px-6 font-semibold text-white shadow-soft hover:bg-primary-hover sm:w-auto"
+      >
+        {pending ? (
+          <>
+            <Loader2 className="mr-2 size-4 animate-spin" />
+            <span>Enviando reseña…</span>
+          </>
+        ) : (
+          "Publicar reseña"
+        )}
+      </Button>
     </form>
   );
 }
