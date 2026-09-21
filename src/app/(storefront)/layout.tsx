@@ -11,17 +11,32 @@ import { ExitIntent } from "@/components/marketing/exit-intent";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { getCartView } from "@/lib/cart/cart-view";
 
-export default async function StorefrontLayout({ children }: { children: ReactNode }) {
-  const { count } = await getCartView();
+export default async function StorefrontLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const { count, lines } = await getCartView();
+  const initialLines = lines.map((l) => ({
+    id: l.id,
+    refId: l.refId,
+    productId: l.productId ?? null,
+    qty: l.qty,
+  }));
+
   return (
     <PostHogProvider>
-      <CartProvider>
+      <CartProvider initialLines={initialLines} initialCount={count}>
         <a href="#main" className="skip-link">
           Saltar al contenido
         </a>
         <div className="flex min-h-dvh flex-col">
           <SiteHeader />
-          <main id="main" tabIndex={-1} className="container flex-1 pb-20 pt-4 md:pb-8">
+          <main
+            id="main"
+            tabIndex={-1}
+            className="container flex-1 pb-20 pt-4 md:pb-8"
+          >
             {children}
           </main>
           <SiteFooter />
