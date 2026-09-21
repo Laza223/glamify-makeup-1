@@ -2,17 +2,34 @@
 
 import { revalidatePath } from "next/cache";
 import {
-  loadCart, loadCurrentCart, createCart, addItem, updateItem, removeItem, cartToCheckoutLines,
+  loadCart,
+  loadCurrentCart,
+  createCart,
+  addItem,
+  updateItem,
+  removeItem,
+  cartToCheckoutLines,
 } from "@/lib/cart/cart-service";
-import { getCartIdFromCookie, setCartIdCookie, getCouponCodeFromCookie, setCouponCodeCookie } from "@/lib/cart/cart-cookie";
+import {
+  getCartIdFromCookie,
+  setCartIdCookie,
+  getCouponCodeFromCookie,
+  setCouponCodeCookie,
+} from "@/lib/cart/cart-cookie";
 import { cartSubtotal } from "@/lib/cart/totals";
 import { validateCoupon, applyCoupon } from "@/lib/coupons/apply";
 import { toNumber } from "@/lib/catalog/pricing";
 import { prisma } from "@/lib/prisma";
 import { quoteShipping } from "@/lib/shipping/index";
 import { provinceCode, getMicorreoAgencies } from "@/lib/shipping/micorreo";
-import { getShippingZonesForQuote, getFreeShippingThreshold } from "@/lib/orders/checkout-data";
-import { createCheckout, defaultCheckoutDeps } from "@/lib/orders/checkout-service";
+import {
+  getShippingZonesForQuote,
+  getFreeShippingThreshold,
+} from "@/lib/orders/checkout-data";
+import {
+  createCheckout,
+  defaultCheckoutDeps,
+} from "@/lib/orders/checkout-service";
 import { getCustomer } from "@/lib/customer/auth";
 import type { ActionResult } from "@/lib/forms/action-result";
 
@@ -25,7 +42,10 @@ function appUrl(): string {
 async function ensureCartId(): Promise<string> {
   const existing = await getCartIdFromCookie();
   if (existing) {
-    const cart = await prisma.cart.findUnique({ where: { id: existing }, select: { id: true, status: true } });
+    const cart = await prisma.cart.findUnique({
+      where: { id: existing },
+      select: { id: true, status: true },
+    });
     if (cart && cart.status === "active") return existing;
   }
   const id = await createCart();
@@ -33,22 +53,39 @@ async function ensureCartId(): Promise<string> {
   return id;
 }
 
-export async function addToCartAction(input: { variantId?: string; comboId?: string; qty?: number }): Promise<ActionResult> {
+export async function addToCartAction(input: {
+  variantId?: string;
+  comboId?: string;
+  qty?: number;
+}): Promise<ActionResult> {
   try {
     const cartId = await ensureCartId();
-    await addItem({ cartId, variantId: input.variantId, comboId: input.comboId, qty: input.qty ?? 1 });
+    await addItem({
+      cartId,
+      variantId: input.variantId,
+      comboId: input.comboId,
+      qty: input.qty ?? 1,
+    });
     revalidatePath("/", "layout");
     revalidatePath("/carrito");
     return { ok: true };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "No se pudo agregar al carrito." };
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : "No se pudo agregar al carrito.",
+    };
   }
 }
 
-export async function addKitToCartAction(variantIds: string[]): Promise<ActionResult> {
+export async function addKitToCartAction(
+  variantIds: string[],
+): Promise<ActionResult> {
   try {
     if (!variantIds || variantIds.length === 0) {
-      return { ok: false, error: "Seleccioná al menos un producto para tu kit." };
+      return {
+        ok: false,
+        error: "Seleccioná al menos un producto para tu kit.",
+      };
     }
     const cartId = await ensureCartId();
     for (const vid of variantIds) {
@@ -58,11 +95,20 @@ export async function addKitToCartAction(variantIds: string[]): Promise<ActionRe
     revalidatePath("/carrito");
     return { ok: true };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "No se pudo agregar el kit al carrito." };
+    return {
+      ok: false,
+      error:
+        e instanceof Error
+          ? e.message
+          : "No se pudo agregar el kit al carrito.",
+    };
   }
 }
 
-export async function updateCartItemAction(itemId: string, qty: number): Promise<ActionResult> {
+export async function updateCartItemAction(
+  itemId: string,
+  qty: number,
+): Promise<ActionResult> {
   try {
     const cartId = await getCartIdFromCookie();
     if (!cartId) return { ok: false, error: "No hay un carrito activo." };
@@ -71,11 +117,17 @@ export async function updateCartItemAction(itemId: string, qty: number): Promise
     revalidatePath("/carrito");
     return { ok: true };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "No se pudo actualizar el carrito." };
+    return {
+      ok: false,
+      error:
+        e instanceof Error ? e.message : "No se pudo actualizar el carrito.",
+    };
   }
 }
 
-export async function removeCartItemAction(itemId: string): Promise<ActionResult> {
+export async function removeCartItemAction(
+  itemId: string,
+): Promise<ActionResult> {
   try {
     const cartId = await getCartIdFromCookie();
     if (!cartId) return { ok: false, error: "No hay un carrito activo." };
@@ -84,14 +136,54 @@ export async function removeCartItemAction(itemId: string): Promise<ActionResult
     revalidatePath("/carrito");
     return { ok: true };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "No se pudo quitar del carrito." };
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : "No se pudo quitar del carrito.",
+    };
+  }
+}
+
+export async function setVariantQtyAction(input: {
+  variantId: string;
+  qty: number;
+}): Promise<ActionResult> {
+  try {
+    const cartId = await ensureCartId();
+    const existing = await prisma.cartItem.findFirst({
+      where: { cartId, variantId: input.variantId },
+      select: { id: true },
+    });
+
+    if (input.qty <= 0) {
+      if (existing) {
+        await removeItem(cartId, existing.id);
+      }
+    } else {
+      if (existing) {
+        await updateItem(cartId, existing.id, input.qty);
+      } else {
+        await addItem({ cartId, variantId: input.variantId, qty: input.qty });
+      }
+    }
+
+    revalidatePath("/", "layout");
+    revalidatePath("/carrito");
+    return { ok: true };
+  } catch (e) {
+    return {
+      ok: false,
+      error:
+        e instanceof Error ? e.message : "No se pudo actualizar la cantidad.",
+    };
   }
 }
 
 export async function applyCouponAction(code: string): Promise<ActionResult> {
   const normalized = code.trim().toUpperCase();
   if (!normalized) return { ok: false, error: "Ingresá un código." };
-  const coupon = await prisma.coupon.findUnique({ where: { code: normalized } });
+  const coupon = await prisma.coupon.findUnique({
+    where: { code: normalized },
+  });
   if (!coupon) return { ok: false, error: "Cupón inexistente." };
   const cartId = await getCartIdFromCookie();
   const { lines } = await loadCart(cartId);
@@ -100,18 +192,31 @@ export async function applyCouponAction(code: string): Promise<ActionResult> {
   let customerRedemptions = 0;
   if (customer && coupon.perCustomerLimit != null) {
     const r = await prisma.couponRedemption.findUnique({
-      where: { customerId_couponId: { customerId: customer.id, couponId: coupon.id } },
+      where: {
+        customerId_couponId: { customerId: customer.id, couponId: coupon.id },
+      },
     });
     customerRedemptions = r?.redeemedCount ?? 0;
   }
-  const validatable = { ...coupon, minSubtotal: coupon.minSubtotal != null ? toNumber(coupon.minSubtotal) : null };
-  const v = validateCoupon(validatable, { subtotal, now: new Date(), customerRedemptions });
+  const validatable = {
+    ...coupon,
+    minSubtotal:
+      coupon.minSubtotal != null ? toNumber(coupon.minSubtotal) : null,
+  };
+  const v = validateCoupon(validatable, {
+    subtotal,
+    now: new Date(),
+    customerRedemptions,
+  });
   if (!v.ok) return { ok: false, error: v.reason };
   // No "aplicar" un cupón con scope a producto/categoría que no rinde descuento sobre este carrito.
   const applicable = { ...coupon, value: toNumber(coupon.value) };
   const effect = applyCoupon(applicable, lines);
   if (effect.discount === 0 && !effect.freeShipping) {
-    return { ok: false, error: "El cupón no aplica a los productos de tu carrito." };
+    return {
+      ok: false,
+      error: "El cupón no aplica a los productos de tu carrito.",
+    };
   }
   await setCouponCodeCookie(normalized);
   revalidatePath("/carrito");
@@ -131,15 +236,31 @@ export interface QuoteResult extends ActionResult {
   free?: boolean;
   source?: string;
 }
-export async function quoteShippingAction(input: { cp: string; province?: string; city?: string; method: "domicilio" | "sucursal" }): Promise<QuoteResult> {
-  if (!/^\d{4}$/.test(input.cp)) return { ok: false, error: "CP inválido (4 dígitos)." };
+export async function quoteShippingAction(input: {
+  cp: string;
+  province?: string;
+  city?: string;
+  method: "domicilio" | "sucursal";
+}): Promise<QuoteResult> {
+  if (!/^\d{4}$/.test(input.cp))
+    return { ok: false, error: "CP inválido (4 dígitos)." };
   const cartId = await getCartIdFromCookie();
   const { lines } = await loadCart(cartId);
   if (lines.length === 0) return { ok: false, error: "El carrito está vacío." };
   const subtotal = cartSubtotal(lines);
   const quote = await quoteShipping(
-    { cp: input.cp, province: input.province ?? null, city: input.city ?? null, method: input.method, lines, subtotal },
-    { getZones: getShippingZonesForQuote, getThreshold: getFreeShippingThreshold },
+    {
+      cp: input.cp,
+      province: input.province ?? null,
+      city: input.city ?? null,
+      method: input.method,
+      lines,
+      subtotal,
+    },
+    {
+      getZones: getShippingZonesForQuote,
+      getThreshold: getFreeShippingThreshold,
+    },
   );
   return { ok: true, cost: quote.cost, free: quote.free, source: quote.source };
 }
@@ -148,11 +269,17 @@ export interface AgenciesResult extends ActionResult {
   agencies?: { code: string; label: string }[];
 }
 /** Lista sucursales de MiCorreo para la provincia/localidad elegidas (selector de checkout). */
-export async function agenciesAction(input: { province?: string; city?: string }): Promise<AgenciesResult> {
+export async function agenciesAction(input: {
+  province?: string;
+  city?: string;
+}): Promise<AgenciesResult> {
   const code = provinceCode(input.province);
   if (!code) return { ok: false, error: "Provincia no reconocida." };
   const agencies = await getMicorreoAgencies(code, input.city ?? null);
-  return { ok: true, agencies: agencies.map((a) => ({ code: a.code, label: a.label })) };
+  return {
+    ok: true,
+    agencies: agencies.map((a) => ({ code: a.code, label: a.label })),
+  };
 }
 
 export interface CheckoutResult extends ActionResult {
@@ -160,31 +287,64 @@ export interface CheckoutResult extends ActionResult {
   orderNumber?: string;
 }
 export async function createCheckoutAction(input: {
-  contactName: string; contactEmail: string; contactPhone: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
   shippingMethod: "domicilio" | "sucursal";
-  address: { cp: string; province?: string; street?: string; number?: string; floorApt?: string; city?: string; notes?: string; agencyCode?: string; agencyLabel?: string };
+  address: {
+    cp: string;
+    province?: string;
+    street?: string;
+    number?: string;
+    floorApt?: string;
+    city?: string;
+    notes?: string;
+    agencyCode?: string;
+    agencyLabel?: string;
+  };
 }): Promise<CheckoutResult> {
   try {
     const { cart, cartId } = await loadCurrentCart();
-    if (!cart || cart.items.length === 0) return { ok: false, error: "Tu carrito está vacío." };
+    if (!cart || cart.items.length === 0)
+      return { ok: false, error: "Tu carrito está vacío." };
     const lines = cartToCheckoutLines(cart);
     const couponCode = await getCouponCodeFromCookie();
     // Asociar el pedido a la clienta logueada (historial en /cuenta/pedidos + límite de cupón por clienta).
     const customer = await getCustomer();
     const result = await createCheckout(
       {
-        contactName: input.contactName, contactEmail: input.contactEmail, contactPhone: input.contactPhone,
-        shippingMethod: input.shippingMethod, address: input.address, lines, couponCode, cartId,
+        contactName: input.contactName,
+        contactEmail: input.contactEmail,
+        contactPhone: input.contactPhone,
+        shippingMethod: input.shippingMethod,
+        address: input.address,
+        lines,
+        couponCode,
+        cartId,
         customerId: customer?.id ?? null,
       },
       defaultCheckoutDeps(appUrl()),
     );
-    return { ok: true, initPoint: result.initPoint, orderNumber: result.orderNumber };
+    return {
+      ok: true,
+      initPoint: result.initPoint,
+      orderNumber: result.orderNumber,
+    };
   } catch (e) {
     // AbortSignal.timeout() en mercadopago.ts tira un DOMException técnico en inglés — no mostrárselo a la clienta.
-    if (e instanceof DOMException && (e.name === "TimeoutError" || e.name === "AbortError")) {
-      return { ok: false, error: "No pudimos conectar con Mercado Pago. Probá de nuevo en unos segundos." };
+    if (
+      e instanceof DOMException &&
+      (e.name === "TimeoutError" || e.name === "AbortError")
+    ) {
+      return {
+        ok: false,
+        error:
+          "No pudimos conectar con Mercado Pago. Probá de nuevo en unos segundos.",
+      };
     }
-    return { ok: false, error: e instanceof Error ? e.message : "No se pudo iniciar el pago." };
+    return {
+      ok: false,
+      error: e instanceof Error ? e.message : "No se pudo iniciar el pago.",
+    };
   }
 }

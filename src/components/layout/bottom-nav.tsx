@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Store, Sparkles, ShoppingBag, User, type LucideIcon } from "lucide-react";
+import {
+  Home,
+  Store,
+  Sparkles,
+  ShoppingBag,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartUI } from "@/components/cart/cart-provider";
 
@@ -23,22 +30,43 @@ const ITEMS: NavItem[] = [
 
 export function BottomNav({ cartCount = 0 }: { cartCount?: number }) {
   const pathname = usePathname();
-  const { openCart } = useCartUI();
+  const { openCart, cartCount: ctxCount } = useCartUI();
+  const effectiveCount = typeof ctxCount === "number" ? ctxCount : cartCount;
 
   if (pathname.startsWith("/checkout")) return null;
 
   return (
-    <nav aria-label="Navegación principal" className="fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-white/95 backdrop-blur-md md:hidden">
+    <nav
+      aria-label="Navegación principal"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-white/95 backdrop-blur-md md:hidden"
+    >
       <ul className="grid grid-cols-5">
         {ITEMS.map((item) => {
           const isCart = item.label === "Carrito";
-          const active = item.enabled && (item.href === "/" ? pathname === "/" : pathname.startsWith(item.href));
+          const active =
+            item.enabled &&
+            (item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href));
           const Icon = item.icon;
           const content = (
-            <span className={cn("relative flex h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors", active ? "text-primary font-bold" : "text-muted-foreground")}>
-              <Icon className={cn("size-5 transition-transform", active && "scale-110")} aria-hidden />
-              {isCart && cartCount > 0 && (
-                <span className="absolute right-1/4 top-1.5 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold text-white tabular-nums shadow-xs">{cartCount}</span>
+            <span
+              className={cn(
+                "relative flex h-14 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors",
+                active ? "font-bold text-primary" : "text-muted-foreground",
+              )}
+            >
+              <Icon
+                className={cn(
+                  "size-5 transition-transform",
+                  active && "scale-110",
+                )}
+                aria-hidden
+              />
+              {isCart && effectiveCount > 0 && (
+                <span className="shadow-xs absolute right-1/4 top-1.5 grid min-w-4 place-items-center rounded-full bg-primary px-1 text-[10px] font-bold tabular-nums text-white">
+                  {effectiveCount}
+                </span>
               )}
               <span>{item.label}</span>
             </span>
@@ -47,7 +75,12 @@ export function BottomNav({ cartCount = 0 }: { cartCount?: number }) {
           if (isCart) {
             return (
               <li key={item.label}>
-                <button type="button" onClick={openCart} aria-label={`Carrito${cartCount > 0 ? ` (${cartCount})` : ""}`} className="w-full">
+                <button
+                  type="button"
+                  onClick={openCart}
+                  aria-label={`Carrito${effectiveCount > 0 ? ` (${effectiveCount})` : ""}`}
+                  className="w-full"
+                >
                   {content}
                 </button>
               </li>
@@ -56,10 +89,20 @@ export function BottomNav({ cartCount = 0 }: { cartCount?: number }) {
           return (
             <li key={item.label}>
               {item.enabled ? (
-                <Link href={item.href} aria-current={active ? "page" : undefined}>{content}</Link>
+                <Link
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                >
+                  {content}
+                </Link>
               ) : (
-                <span aria-disabled="true" title="Próximamente" className="cursor-not-allowed opacity-40">
-                  {content}<span className="sr-only">Próximamente</span>
+                <span
+                  aria-disabled="true"
+                  title="Próximamente"
+                  className="cursor-not-allowed opacity-40"
+                >
+                  {content}
+                  <span className="sr-only">Próximamente</span>
                 </span>
               )}
             </li>
