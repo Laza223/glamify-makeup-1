@@ -12,7 +12,10 @@ interface VariantSwatchSelectorProps {
   onChange?: (variant: CatalogVariant) => void;
 }
 
-export function VariantSwatchSelector({ variants, onChange }: VariantSwatchSelectorProps) {
+export function VariantSwatchSelector({
+  variants,
+  onChange,
+}: VariantSwatchSelectorProps) {
   const firstAvailable = variants.find((v) => v.stock > 0) ?? variants[0];
   const [selectedId, setSelectedId] = useState(firstAvailable?.id);
   const selected = variants.find((v) => v.id === selectedId) ?? firstAvailable;
@@ -34,14 +37,20 @@ export function VariantSwatchSelector({ variants, onChange }: VariantSwatchSelec
     else {
       const pos = selectableIdx.indexOf(currentIdx);
       const base = pos === -1 ? 0 : pos;
-      nextIdx = selectableIdx[(base + dir + selectableIdx.length) % selectableIdx.length];
+      nextIdx =
+        selectableIdx[
+          (base + dir + selectableIdx.length) % selectableIdx.length
+        ];
     }
     select(variants[nextIdx]);
     btnRefs.current[nextIdx]?.focus();
   };
 
   // Patrón WAI-ARIA radiogroup: flechas mueven la selección, Home/End a los extremos.
-  const onKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, idx: number) => {
+  const onKeyDown = (
+    e: React.KeyboardEvent<HTMLButtonElement>,
+    idx: number,
+  ) => {
     switch (e.key) {
       case "ArrowRight":
       case "ArrowDown":
@@ -70,9 +79,15 @@ export function VariantSwatchSelector({ variants, onChange }: VariantSwatchSelec
         <span className="text-sm font-medium">
           Tono: <span className="text-muted-foreground">{selected?.name}</span>
         </span>
-        {selected && <StockBadge state={getStockState(selected)} stock={selected.stock} />}
+        {selected && (
+          <StockBadge state={getStockState(selected)} stock={selected.stock} />
+        )}
       </div>
-      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Elegí un tono">
+      <div
+        className="flex flex-wrap gap-2"
+        role="radiogroup"
+        aria-label="Elegí un tono"
+      >
         {variants.map((v, i) => {
           const out = v.stock <= 0;
           const isSelected = v.id === selected?.id;
@@ -92,18 +107,27 @@ export function VariantSwatchSelector({ variants, onChange }: VariantSwatchSelec
               onClick={() => select(v)}
               onKeyDown={(e) => onKeyDown(e, i)}
               className={cn(
-                "relative size-11 rounded-full border-2 transition active:scale-[0.97]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                isSelected ? "border-primary" : "border-border",
-                out && "cursor-not-allowed opacity-40",
+                "shadow-xs relative flex size-11 items-center justify-center rounded-full border-2 bg-white transition active:scale-[0.97]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                isSelected
+                  ? "border-primary ring-1 ring-primary"
+                  : "border-border/80 text-foreground/80 hover:border-neutral-400",
+                out && "cursor-not-allowed bg-neutral-100 opacity-40",
               )}
-              style={v.swatchHex ? { backgroundColor: v.swatchHex } : undefined}
             >
-              {!v.swatchHex && <span className="text-xs">{v.name.charAt(0)}</span>}
-              {isSelected && (
-                <Check className="absolute inset-0 m-auto size-5 text-white drop-shadow" aria-hidden strokeWidth={3} />
+              {isSelected ? (
+                <Check className="size-5 stroke-[3] text-primary" aria-hidden />
+              ) : (
+                <span className="text-xs font-semibold text-foreground/80">
+                  {v.name.replace(/^tono\s*/i, "").trim() || v.name.charAt(0)}
+                </span>
               )}
-              {out && <span className="absolute inset-x-0 top-1/2 h-0.5 -rotate-45 bg-foreground/60" aria-hidden />}
+              {out && (
+                <span
+                  className="absolute inset-x-0 top-1/2 h-0.5 -rotate-45 bg-foreground/60"
+                  aria-hidden
+                />
+              )}
             </button>
           );
         })}

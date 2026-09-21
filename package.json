@@ -27,6 +27,7 @@
     "sim:webhook": "tsx --env-file=.env scripts/simulate-mp-webhook.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "product:clean-test": "tsx --env-file=.env scripts/unpublish-test-product.ts",
     "zipnova:probe": "tsx --env-file=.env scripts/zipnova-probe.ts",
     "micorreo:probe": "tsx --env-file=.env scripts/micorreo-probe.ts"
   },

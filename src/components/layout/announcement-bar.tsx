@@ -1,15 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Sparkles, Truck, CreditCard, ShieldCheck } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Truck, CreditCard, ShieldCheck } from "lucide-react";
 
 const MESSAGES = [
-  { icon: Truck, text: "Envío gratis a todo el país en compras mayores a $47.500" },
+  {
+    icon: Truck,
+    text: "Envío gratis a todo el país superando el monto mínimo",
+  },
   { icon: CreditCard, text: "3 cuotas sin interés con todas las tarjetas" },
-  { icon: ShieldCheck, text: "Fórmulas Cruelty-Free y Testeadas Dermatológicamente" },
+  {
+    icon: ShieldCheck,
+    text: "Pagos 100% seguros y protegidos con Mercado Pago",
+  },
 ];
 
 export function AnnouncementBar() {
+  const pathname = usePathname();
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -19,17 +27,19 @@ export function AnnouncementBar() {
     return () => clearInterval(timer);
   }, []);
 
+  if (pathname.startsWith("/checkout")) return null;
+
   const current = MESSAGES[index];
   const Icon = current.icon;
 
   return (
-    <div className="relative overflow-hidden bg-[#161413] text-[#FBF9F6] py-2 px-4 text-center border-b border-white/10 select-none">
-      <div className="container flex items-center justify-center min-h-[20px]">
+    <div className="relative select-none overflow-hidden border-b border-white/10 bg-[#161413] px-4 py-2 text-center text-[#FBF9F6]">
+      <div className="container flex min-h-[20px] items-center justify-center">
         <div
           key={index}
-          className="inline-flex items-center justify-center gap-2 text-xs md:text-sm font-medium tracking-wide animate-fade-up"
+          className="inline-flex animate-fade-up items-center justify-center gap-2 text-xs font-medium tracking-wide md:text-sm"
         >
-          <Icon className="size-3.5 text-primary shrink-0" aria-hidden="true" />
+          <Icon className="size-3.5 shrink-0 text-primary" aria-hidden="true" />
           <span>{current.text}</span>
         </div>
       </div>

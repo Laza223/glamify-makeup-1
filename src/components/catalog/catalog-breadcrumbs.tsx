@@ -1,4 +1,6 @@
 import { Fragment } from "react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,24 +12,42 @@ import {
 import type { Crumb } from "@/lib/catalog/categories";
 
 export function CatalogBreadcrumbs({ items }: { items: Crumb[] }) {
+  const parent = items.length >= 2 ? items[items.length - 2] : items[0];
+
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        {items.map((c, i) => (
-          // BreadcrumbSeparator es un <li> — tiene que ser hermano de BreadcrumbItem (otro <li>),
-          // no hijo: <li> anidado en <li> es HTML inválido y rompe la hidratación de React.
-          <Fragment key={c.href}>
-            <BreadcrumbItem>
-              {c.current ? (
-                <BreadcrumbPage className="line-clamp-1">{c.label}</BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink href={c.href}>{c.label}</BreadcrumbLink>
-              )}
-            </BreadcrumbItem>
-            {i < items.length - 1 && <BreadcrumbSeparator />}
-          </Fragment>
-        ))}
-      </BreadcrumbList>
-    </Breadcrumb>
+    <nav aria-label="Ruta de navegación">
+      {/* Mobile: Navegación simple ← Categoría sin partirse en dos líneas */}
+      {parent && (
+        <div className="md:hidden">
+          <Link
+            href={parent.href}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors py-0.5"
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>Volver a {parent.label}</span>
+          </Link>
+        </div>
+      )}
+
+      {/* Desktop: Breadcrumb jerárquico completo */}
+      <div className="hidden md:block">
+        <Breadcrumb>
+          <BreadcrumbList>
+            {items.map((c, i) => (
+              <Fragment key={c.href}>
+                <BreadcrumbItem>
+                  {c.current ? (
+                    <BreadcrumbPage className="line-clamp-1">{c.label}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink href={c.href}>{c.label}</BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+                {i < items.length - 1 && <BreadcrumbSeparator />}
+              </Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+    </nav>
   );
 }

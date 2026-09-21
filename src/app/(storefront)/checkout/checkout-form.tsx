@@ -167,7 +167,7 @@ export function CheckoutForm({ subtotal, discount, couponCode, couponFreeShippin
             </div>
           )}
           <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notas para la entrega (opcional)" aria-label="Notas" />
-          {shipping && <p className="text-sm text-muted-foreground">Envío: {shipping.free ? "Gratis 🎉" : formatARS(shippingCost ?? 0)}</p>}
+          {shipping && <p className="text-sm font-medium text-muted-foreground">Envío: {shipping.free ? <span className="text-emerald-600 font-semibold">Gratis</span> : formatARS(shippingCost ?? 0)}</p>}
         </fieldset>
       </div>
 

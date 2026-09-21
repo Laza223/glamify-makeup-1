@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { Sparkles, ArrowRight, Gift, Heart, Package, Flower2 } from "lucide-react";
+import {
+  Sparkles,
+  ArrowRight,
+  Gift,
+  Heart,
+  Package,
+  Flower2,
+} from "lucide-react";
 
 interface GiftItem {
   id: string;
@@ -15,10 +22,11 @@ interface GiftItem {
 const GIFT_ITEMS: GiftItem[] = [
   {
     id: "lip-combos",
-    title: "Lip Combo's",
-    badge: "Tendencia Viral 🔥",
-    description: "Combinaciones exclusivas de delineador, labial y gloss para un acabado profesional y jugoso.",
-    href: "/tienda/lip-combos",
+    title: "Lip Combos",
+    badge: "Tendencia Viral",
+    description:
+      "Combinaciones exclusivas de delineador, labial y gloss para un acabado profesional y jugoso.",
+    href: "/tienda/labios",
     icon: Sparkles,
     image: "/images/product_lipstick.png",
     gradient: "from-rose-500/10 to-pink-500/5",
@@ -26,8 +34,9 @@ const GIFT_ITEMS: GiftItem[] = [
   {
     id: "gift-cards",
     title: "Gift Cards",
-    badge: "Regalo Seguro 🎀",
-    description: "La tarjeta de regalo perfecta para que esa persona especial elija sus productos favoritos.",
+    badge: "Regalo Seguro",
+    description:
+      "La tarjeta de regalo perfecta para que esa persona especial elija sus productos favoritos.",
     href: "/tienda/gift-cards",
     icon: Gift,
     image: "/images/exit_modal_visual.jpg",
@@ -36,8 +45,9 @@ const GIFT_ITEMS: GiftItem[] = [
   {
     id: "ramos-maquillaje",
     title: "Ramos de Maquillaje",
-    badge: "El Más Elegido 💐",
-    description: "Presentaciones tipo ramo súper originales armadas con los mejores cosméticos y detalles girly.",
+    badge: "El Más Elegido",
+    description:
+      "Presentaciones tipo ramo súper originales armadas con los mejores cosméticos y detalles girly.",
     href: "/tienda/ramos-maquillaje",
     icon: Flower2,
     image: "/images/hero_editorial_glow.jpg",
@@ -46,8 +56,9 @@ const GIFT_ITEMS: GiftItem[] = [
   {
     id: "box-maquillaje",
     title: "Box de Maquillaje",
-    badge: "Set Completo ✨",
-    description: "Cajas temáticas con mix de productos seleccionados para armar looks deslumbrantes.",
+    badge: "Set Completo",
+    description:
+      "Cajas temáticas con mix de productos seleccionados para armar looks deslumbrantes.",
     href: "/tienda/box-maquillaje",
     icon: Package,
     image: "/images/product_brushes.png",
@@ -58,66 +69,69 @@ const GIFT_ITEMS: GiftItem[] = [
 export function GiftSection() {
   return (
     <section className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-border/60 pb-4">
+      <div className="flex flex-col justify-between gap-3 border-b border-border/60 pb-4 sm:flex-row sm:items-end">
         <div>
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#FF2E93] mb-1.5">
-            <Heart className="size-3.5 fill-[#FF2E93]" />
+          <div className="mb-1.5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary">
+            <Heart className="size-3.5 fill-primary" />
             <span>Especial Regalos</span>
           </div>
-          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-wider text-foreground">
-            Regalá beauty, regalá Glamify 💗
+          <h2 className="font-display text-2xl font-bold uppercase tracking-wider text-foreground sm:text-3xl md:text-4xl">
+            Regalá beauty, regalá Glamify
           </h2>
-          <p className="text-sm md:text-base text-muted-foreground mt-1">
-            Sorprendé a quien más querés con los detalles más lindos y especiales
+          <p className="mt-1 text-sm text-muted-foreground md:text-base">
+            Sorprendé a quien más querés con los detalles más lindos y
+            especiales
           </p>
         </div>
         <Link
           href="/tienda/especial-regalos"
-          className="text-xs font-bold uppercase tracking-widest text-primary hover:underline inline-flex items-center gap-1 shrink-0"
+          className="inline-flex shrink-0 items-center gap-1 text-xs font-bold uppercase tracking-widest text-primary hover:underline"
         >
           <span>Ver todas las opciones</span>
           <ArrowRight className="size-3.5" />
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {GIFT_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
             <Link
               key={item.id}
               href={item.href}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-white/90 p-6 shadow-soft transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-1 hover:border-[#FF2E93]/40"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-border/80 bg-white/90 p-6 shadow-soft transition-all duration-300 hover:border-primary/40 hover:shadow-soft-lg"
             >
               {/* Fondo suave con degradé */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-60 group-hover:opacity-100 transition-opacity`} />
+              <div
+                className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-60 transition-opacity group-hover:opacity-100`}
+              />
 
               <div className="relative z-10 space-y-4">
                 {/* Header de la tarjeta */}
                 <div className="flex items-center justify-between">
-                  <div className="flex size-11 items-center justify-center rounded-2xl bg-white shadow-soft text-[#FF2E93] border border-pink-100 group-hover:scale-110 transition-transform duration-300">
+                  <div className="flex size-11 items-center justify-center rounded-2xl border border-pink-100 bg-white text-primary shadow-soft transition-transform duration-300 group-hover:scale-110">
                     <Icon className="size-5" />
                   </div>
-                  <span className="inline-flex items-center text-[11px] font-bold px-2.5 py-1 rounded-full bg-white/90 text-foreground/80 border border-border/60 shadow-xs">
+                  <span className="shadow-xs inline-flex items-center rounded-full border border-border/60 bg-white/90 px-2.5 py-1 text-[11px] font-bold text-foreground/80">
                     {item.badge}
                   </span>
                 </div>
 
                 {/* Título y descripción */}
                 <div className="space-y-1.5">
-                  <h3 className="font-display text-xl font-bold text-foreground group-hover:text-[#FF2E93] transition-colors">
+                  <h3 className="font-display text-xl font-bold text-foreground transition-colors group-hover:text-primary">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
+                  <p className="text-xs leading-relaxed text-muted-foreground">
                     {item.description}
                   </p>
                 </div>
               </div>
 
               {/* Botón de acción inferior */}
-              <div className="relative z-10 pt-5 mt-auto flex items-center gap-1 text-xs font-bold text-primary group-hover:text-foreground transition-colors">
+              <div className="relative z-10 mt-auto flex items-center gap-1 pt-5 text-xs font-bold text-primary transition-colors group-hover:text-foreground">
                 <span>Ver opciones</span>
-                <ArrowRight className="size-3.5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
               </div>
             </Link>
           );

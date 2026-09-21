@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Store, Search, ShoppingBag, User, type LucideIcon } from "lucide-react";
+import { Home, Store, Sparkles, ShoppingBag, User, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCartUI } from "@/components/cart/cart-provider";
 
@@ -16,7 +16,7 @@ interface NavItem {
 const ITEMS: NavItem[] = [
   { href: "/", label: "Inicio", icon: Home, enabled: true },
   { href: "/tienda", label: "Tienda", icon: Store, enabled: true },
-  { href: "#", label: "Buscar", icon: Search, enabled: false },
+  { href: "/arma-tu-kit", label: "Armá tu kit", icon: Sparkles, enabled: true },
   { href: "/carrito", label: "Carrito", icon: ShoppingBag, enabled: true },
   { href: "/cuenta", label: "Cuenta", icon: User, enabled: true },
 ];
@@ -24,6 +24,8 @@ const ITEMS: NavItem[] = [
 export function BottomNav({ cartCount = 0 }: { cartCount?: number }) {
   const pathname = usePathname();
   const { openCart } = useCartUI();
+
+  if (pathname.startsWith("/checkout")) return null;
 
   return (
     <nav aria-label="Navegación principal" className="fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-white/95 backdrop-blur-md md:hidden">

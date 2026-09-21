@@ -2,7 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Gift, Copy, Check } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +20,11 @@ const CONSENT_KEY = "glamify_analytics";
 
 /** La elección de consentimiento se guarda en cookie (fuente de verdad) + localStorage (best-effort). */
 function consentDecided(): boolean {
-  if (typeof document !== "undefined" && new RegExp("(?:^|; )" + CONSENT_KEY + "=").test(document.cookie)) return true;
+  if (
+    typeof document !== "undefined" &&
+    new RegExp("(?:^|; )" + CONSENT_KEY + "=").test(document.cookie)
+  )
+    return true;
   try {
     return Boolean(localStorage.getItem(CONSENT_KEY));
   } catch {
@@ -104,9 +114,12 @@ export function ExitIntent() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent side="center" className="sm:max-w-lg p-0 overflow-hidden rounded-3xl border border-border/80 bg-card shadow-soft-lg">
+      <SheetContent
+        side="center"
+        className="overflow-hidden rounded-3xl border border-border/80 bg-card p-0 shadow-soft-lg sm:max-w-lg"
+      >
         <div className="grid grid-cols-1 md:grid-cols-12">
-          <div className="hidden md:block md:col-span-5 relative bg-secondary">
+          <div className="relative hidden bg-secondary md:col-span-5 md:block">
             <img
               src="/images/exit_modal_visual.jpg"
               alt="Glamify Makeup Especial"
@@ -114,29 +127,35 @@ export function ExitIntent() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 text-white">
-              <span className="text-[10px] font-bold uppercase tracking-widest bg-primary px-2 py-0.5 rounded-full">
+              <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest">
                 Exclusivo
               </span>
             </div>
           </div>
 
-          <div className="md:col-span-7 p-6 sm:p-8 flex flex-col justify-center">
-            <SheetHeader className="text-left space-y-2">
+          <div className="flex flex-col justify-center p-6 sm:p-8 md:col-span-7">
+            <SheetHeader className="space-y-2 text-left">
               <div className="inline-flex size-9 items-center justify-center rounded-2xl bg-secondary text-primary">
                 <Gift className="size-4.5" aria-hidden />
               </div>
               <SheetTitle className="font-display text-2xl font-bold leading-tight text-foreground">
                 10% OFF en tu primer pedido
               </SheetTitle>
-              <SheetDescription className="text-xs text-muted-foreground leading-relaxed">
-                Dejanos tu email para recibir tu cupón de bienvenida. Fórmulas limpias, sin spam.
+              <SheetDescription className="text-xs leading-relaxed text-muted-foreground">
+                Dejanos tu email para recibir tu cupón de bienvenida. Tus datos
+                están protegidos, sin spam.
               </SheetDescription>
             </SheetHeader>
 
             {!done ? (
               <form onSubmit={onSubmit} className="mt-5 space-y-3">
                 <div className="space-y-1.5 text-left">
-                  <Label htmlFor="exit-email" className="text-xs font-semibold text-foreground">Tu correo electrónico</Label>
+                  <Label
+                    htmlFor="exit-email"
+                    className="text-xs font-semibold text-foreground"
+                  >
+                    Tu correo electrónico
+                  </Label>
                   <Input
                     id="exit-email"
                     type="email"
@@ -145,11 +164,22 @@ export function ExitIntent() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="ejemplo@correo.com"
                     autoComplete="email"
-                    className="rounded-xl border-border/80 bg-background/50 focus-visible:ring-primary text-sm h-11"
+                    className="h-11 rounded-xl border-border/80 bg-background/50 text-sm focus-visible:ring-primary"
                   />
                 </div>
-                {error && <p role="alert" className="text-xs text-destructive font-medium">{error}</p>}
-                <Button type="submit" className="w-full rounded-xl bg-[#161413] text-white hover:bg-neutral-800 h-11 text-xs font-bold shadow-soft" disabled={pending}>
+                {error && (
+                  <p
+                    role="alert"
+                    className="text-xs font-medium text-destructive"
+                  >
+                    {error}
+                  </p>
+                )}
+                <Button
+                  type="submit"
+                  className="h-11 w-full rounded-xl bg-[#161413] text-xs font-bold text-white shadow-soft hover:bg-neutral-800"
+                  disabled={pending}
+                >
                   {pending ? "Generando cupón…" : "Obtener mi 10% OFF"}
                 </Button>
               </form>
@@ -157,20 +187,43 @@ export function ExitIntent() {
               <div className="mt-5 space-y-4 text-center">
                 {coupon ? (
                   <>
-                    <p className="text-xs text-muted-foreground">Tu código de descuento exclusivo:</p>
+                    <p className="text-xs text-muted-foreground">
+                      Tu código de descuento exclusivo:
+                    </p>
                     <div className="flex items-center justify-center gap-2">
                       <code className="rounded-xl border border-border bg-secondary/80 px-4 py-2 font-mono text-base font-bold tracking-widest text-foreground">
                         {coupon}
                       </code>
-                      <Button type="button" variant="outline" size="icon" onClick={copyCode} aria-label="Copiar código" className="rounded-xl size-10">
-                        {copied ? <Check className="size-4 text-emerald-600" aria-hidden /> : <Copy className="size-4" aria-hidden />}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={copyCode}
+                        aria-label="Copiar código"
+                        className="size-10 rounded-xl"
+                      >
+                        {copied ? (
+                          <Check
+                            className="size-4 text-emerald-600"
+                            aria-hidden
+                          />
+                        ) : (
+                          <Copy className="size-4" aria-hidden />
+                        )}
                       </Button>
                     </div>
                   </>
                 ) : (
-                  <p className="text-xs font-semibold text-primary">¡Listo! Te avisaremos de promociones y novedades. ✨</p>
+                  <p className="text-xs font-semibold text-primary">
+                    ¡Listo! Te avisaremos de promociones y novedades.
+                  </p>
                 )}
-                <Button type="button" variant="ghost" className="w-full text-xs font-medium text-muted-foreground" onClick={() => setOpen(false)}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full text-xs font-medium text-muted-foreground"
+                  onClick={() => setOpen(false)}
+                >
                   Continuar navegando
                 </Button>
               </div>

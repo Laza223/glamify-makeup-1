@@ -45,6 +45,23 @@ export async function addToCartAction(input: { variantId?: string; comboId?: str
   }
 }
 
+export async function addKitToCartAction(variantIds: string[]): Promise<ActionResult> {
+  try {
+    if (!variantIds || variantIds.length === 0) {
+      return { ok: false, error: "Seleccioná al menos un producto para tu kit." };
+    }
+    const cartId = await ensureCartId();
+    for (const vid of variantIds) {
+      await addItem({ cartId, variantId: vid, qty: 1 });
+    }
+    revalidatePath("/", "layout");
+    revalidatePath("/carrito");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "No se pudo agregar el kit al carrito." };
+  }
+}
+
 export async function updateCartItemAction(itemId: string, qty: number): Promise<ActionResult> {
   try {
     const cartId = await getCartIdFromCookie();

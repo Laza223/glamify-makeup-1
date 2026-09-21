@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { Lock, ShieldCheck } from "lucide-react";
 import { getCartView } from "@/lib/cart/cart-view";
-import { round2 } from "@/lib/money";
+import { round2, formatARS } from "@/lib/money";
 import { productImageUrl } from "@/lib/images";
 import { CouponInput } from "@/components/cart/coupon-input";
 import { Button } from "@/components/ui/button";
@@ -49,17 +50,25 @@ export async function CartContents() {
       
       <div className="grid gap-2 pt-2">
         <Button asChild size="lg" className="w-full rounded-2xl bg-[#161413] text-white hover:bg-neutral-800 py-6 text-sm font-semibold shadow-soft hover:shadow-soft-lg transition-all">
-          <Link href="/checkout">Iniciar Compra Segura</Link>
+          <Link href="/checkout">
+            Finalizar compra · {formatARS(total)}
+          </Link>
         </Button>
         <Button asChild variant="outline" className="w-full rounded-2xl border-border/80 text-xs font-semibold hover:bg-secondary">
-          <Link href="/carrito">Ver Resumen Completo</Link>
+          <Link href="/carrito">Ver carrito completo</Link>
         </Button>
       </div>
 
       <div className="flex items-center justify-center gap-4 pt-1 text-[11px] text-muted-foreground">
-        <span>🔒 Pago 100% Protegido</span>
+        <span className="inline-flex items-center gap-1">
+          <Lock className="size-3 text-emerald-600" />
+          <span>Pago 100% Protegido</span>
+        </span>
         <span>•</span>
-        <span>✨ Garantía 30 Días</span>
+        <span className="inline-flex items-center gap-1">
+          <ShieldCheck className="size-3 text-primary" />
+          <span>Garantía 30 Días</span>
+        </span>
       </div>
     </div>
   );

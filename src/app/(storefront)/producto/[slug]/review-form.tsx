@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PenLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +11,7 @@ import { track } from "@/lib/analytics/track";
 import { createReviewAction } from "./review-actions";
 
 export function ReviewForm({ productId, slug, isLoggedIn }: { productId: string; slug: string; isLoggedIn: boolean }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [doneStatus, setDoneStatus] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -39,17 +41,43 @@ export function ReviewForm({ productId, slug, isLoggedIn }: { productId: string;
 
   if (doneStatus) {
     return (
-      <p className="text-sm text-primary">
+      <p className="text-sm font-medium text-emerald-700 bg-emerald-50 rounded-xl p-3">
         {doneStatus === "approved"
-          ? "¡Gracias por tu reseña! Ya está publicada."
-          : "¡Gracias por tu reseña! Se publicará tras la revisión de la dueña."}
+          ? "¡Muchas gracias por tu reseña! Ya está publicada."
+          : "¡Muchas gracias por tu reseña! Se publicará tras la moderación."}
       </p>
     );
   }
 
+  if (!isOpen) {
+    return (
+      <div className="pt-1">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setIsOpen(true)}
+          className="rounded-full text-xs font-semibold gap-1.5 hover:bg-secondary hover:text-primary"
+        >
+          <PenLine className="size-3.5" />
+          <span>Escribir reseña</span>
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={onSubmit} className="space-y-3 rounded-2xl border border-border p-4">
-      <p className="text-sm font-medium">Dejá tu reseña</p>
+    <form onSubmit={onSubmit} className="space-y-3 rounded-2xl border border-border p-4 bg-white/90 animate-fade-up">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-foreground">Tu opinión sobre este producto</p>
+        <button
+          type="button"
+          onClick={() => setIsOpen(false)}
+          className="text-xs text-muted-foreground hover:text-foreground"
+        >
+          Cancelar
+        </button>
+      </div>
       <RatingInput name="rating" />
       {!isLoggedIn && (
         <div className="space-y-1">

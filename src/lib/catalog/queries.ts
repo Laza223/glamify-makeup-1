@@ -42,11 +42,22 @@ export async function getProductList(
   const where = buildProductWhere(params, categoryIds);
   const { skip, take } = buildPagination(params);
   const [rows, total] = await Promise.all([
-    prisma.product.findMany({ where, include: PRODUCT_INCLUDE, orderBy: buildProductOrderBy(params), skip, take }),
+    prisma.product.findMany({ where, include: PRODUCT_INCLUDE, orderBy: buildProductOrderBy(params) }),
     prisma.product.count({ where }),
   ]);
+
+  // Asegura que los productos con stock disponible aparezcan primero (agotados al final de la tienda)
+  const sorted = [...rows].sort((a, b) => {
+    const aInStock = a.variants.some((v) => v.active && v.stock > 0);
+    const bInStock = b.variants.some((v) => v.active && v.stock > 0);
+    if (aInStock === bInStock) return 0;
+    return aInStock ? -1 : 1;
+  });
+
+  const pagedItems = sorted.slice(skip, skip + take);
+
   return {
-    items: rows as CatalogProduct[],
+    items: pagedItems as CatalogProduct[],
     total,
     page: params.page,
     pageSize: PAGE_SIZE,
@@ -82,9 +93,14 @@ export async function getFeaturedProducts(limit = 8): Promise<CatalogProduct[]> 
     where: { active: true, deletedAt: null, isFeatured: true },
     include: PRODUCT_INCLUDE,
     orderBy: [{ heroRank: "asc" }, { createdAt: "desc" }],
-    take: limit,
   });
-  return rows as CatalogProduct[];
+  const inStockFirst = [...rows].sort((a, b) => {
+    const aInStock = a.variants.some((v) => v.active && v.stock > 0);
+    const bInStock = b.variants.some((v) => v.active && v.stock > 0);
+    if (aInStock === bInStock) return 0;
+    return aInStock ? -1 : 1;
+  });
+  return inStockFirst.slice(0, limit) as CatalogProduct[];
 }
 
 /** Productos recientes (fallback del Home si no hay destacados). */
