@@ -53,21 +53,36 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
+      - name: Check Vercel Token
+        id: check-token
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "VERCEL_TOKEN no configurado en GitHub Secrets; el despliegue automático es manejado directamente por la integración Git de Vercel."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.check-token.outputs.skip != 'true'
 
       - uses: pnpm/action-setup@v4
+        if: steps.check-token.outputs.skip != 'true'
         with:
           version: 8.15.0
 
       - uses: actions/setup-node@v4
+        if: steps.check-token.outputs.skip != 'true'
         with:
           node-version: 20
           cache: pnpm
 
       - name: Install Vercel CLI
+        if: steps.check-token.outputs.skip != 'true'
         run: pnpm add -g vercel@latest
 
       # Trae config/env del proyecto de Vercel (VERCEL_ORG_ID/VERCEL_PROJECT_ID
@@ -75,10 +90,13 @@ jobs:
       # MP_ACCESS_TOKEN, CRON_SECRET, etc. — ya están cargados en Vercel y
       # PERSISTEN entre deploys, igual que antes con `wrangler secret put`).
       - name: Pull Vercel environment
+        if: steps.check-token.outputs.skip != 'true'
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build (Vercel)
+        if: steps.check-token.outputs.skip != 'true'
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy to Vercel
+        if: steps.check-token.outputs.skip != 'true'
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
