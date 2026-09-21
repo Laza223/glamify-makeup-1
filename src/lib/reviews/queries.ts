@@ -8,14 +8,26 @@ export interface ReviewsSummary {
   average: number;
 }
 
-export async function getApprovedReviews(productId: string): Promise<ReviewsSummary> {
+export async function getApprovedReviews(
+  productId: string,
+): Promise<ReviewsSummary> {
   const rows = await prisma.review.findMany({
     where: { productId, status: "approved" },
     orderBy: { createdAt: "desc" },
-    select: { id: true, authorName: true, rating: true, title: true, body: true, verifiedPurchase: true, createdAt: true },
+    select: {
+      id: true,
+      authorName: true,
+      rating: true,
+      title: true,
+      body: true,
+      photoUrl: true,
+      verifiedPurchase: true,
+      createdAt: true,
+    },
   });
   const count = rows.length;
-  const average = count === 0 ? 0 : rows.reduce((a, r) => a + r.rating, 0) / count;
+  const average =
+    count === 0 ? 0 : rows.reduce((a, r) => a + r.rating, 0) / count;
   return { reviews: rows, count, average };
 }
 
@@ -27,6 +39,7 @@ export interface ModerationItem {
   rating: number;
   title: string | null;
   body: string;
+  photoUrl?: string | null;
   verifiedPurchase: boolean;
   createdAt: Date;
 }
@@ -37,7 +50,14 @@ export async function getModerationQueue(): Promise<ModerationItem[]> {
     where: { status: "pending" },
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, authorName: true, rating: true, title: true, body: true, verifiedPurchase: true, createdAt: true,
+      id: true,
+      authorName: true,
+      rating: true,
+      title: true,
+      body: true,
+      photoUrl: true,
+      verifiedPurchase: true,
+      createdAt: true,
       product: { select: { name: true, slug: true } },
     },
   });
@@ -49,6 +69,7 @@ export async function getModerationQueue(): Promise<ModerationItem[]> {
     rating: r.rating,
     title: r.title,
     body: r.body,
+    photoUrl: r.photoUrl,
     verifiedPurchase: r.verifiedPurchase,
     createdAt: r.createdAt,
   }));
