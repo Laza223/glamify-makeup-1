@@ -79,9 +79,40 @@ export function SiteFooter() {
           </nav>
         ))}
       </div>
-      <div className="container flex flex-col gap-2 border-t border-border/60 py-5 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
-        <p>© {new Date().getFullYear()} Glamify Makeup. Todos los derechos reservados.</p>
-        <p>Medios de pago: {businessInfo.paymentMethods}</p>
+            <div className="container flex flex-col items-center justify-between gap-4 border-t border-border/60 py-5 text-xs text-muted-foreground md:flex-row">
+        <div className="flex flex-col items-center gap-1 text-center md:items-start md:text-left">
+          <p>© {new Date().getFullYear()} Glamify Makeup. Todos los derechos reservados.</p>
+          <p className="text-[11px] text-muted-foreground/80">Medios de pago: {businessInfo.paymentMethods}</p>
+        </div>
+
+        <a
+          href="https://axxensystems.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-2 rounded-full border border-border/80 bg-white/70 px-3.5 py-1.5 text-xs text-muted-foreground shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-white hover:text-foreground hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Sitio web hecho por Axxen Systems"
+        >
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/75 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+          </span>
+          <span>Sitio web hecho por</span>
+          <span className="font-semibold text-foreground transition-colors group-hover:text-primary">
+            Axxen Systems
+          </span>
+          <svg
+            className="h-3 w-3 text-muted-foreground/70 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M4.5 11.5L11.5 4.5M11.5 4.5H6.5M11.5 4.5V9.5" />
+          </svg>
+        </a>
       </div>
     </footer>
   );
