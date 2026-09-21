@@ -106,7 +106,7 @@ export function NavigationProgress() {
       className="pointer-events-none fixed left-0 right-0 top-0 z-[99999] h-[3px] overflow-hidden"
     >
       <div
-        className="h-full bg-gradient-to-r from-[#E6007A] via-[#FF2E93] to-[#FF9ED1] shadow-[0_0_12px_rgba(230,0,122,0.8),0_0_4px_rgba(230,0,122,0.6)] transition-all duration-300 ease-out"
+        className="h-full bg-gradient-to-r from-primary via-primary-hover to-primary shadow-[0_0_12px_rgba(230,0,122,0.8),0_0_4px_rgba(230,0,122,0.6)] transition-all duration-300 ease-out"
         style={{
           width: `${progress}%`,
           opacity: progress === 100 ? 0 : 1,

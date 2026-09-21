@@ -6,6 +6,7 @@ import { StockBadge } from "@/components/catalog/stock-badge";
 import { productImageUrl } from "@/lib/images";
 import { getEffectivePrice, isOnSale, getDiscountPercent, toNumber } from "@/lib/catalog/pricing";
 import { getProductStockState } from "@/lib/catalog/stock";
+import { formatARS } from "@/lib/money";
 import type { CatalogListItem } from "@/lib/catalog/types";
 
 export function ProductCard({ product }: { product: CatalogListItem }) {
@@ -19,16 +20,16 @@ export function ProductCard({ product }: { product: CatalogListItem }) {
   return (
     <Link
       href={`/producto/${product.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-border/80 bg-white shadow-soft transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-1.5 hover:border-neutral-300/80 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="group block overflow-hidden rounded-2xl border border-border/70 bg-white transition-all duration-300 hover:shadow-soft-lg hover:border-border active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="relative aspect-square w-full overflow-hidden bg-secondary skeleton-shimmer">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-secondary">
         {primaryUrl ? (
           <>
             <Image
               src={primaryUrl}
               alt={product.name}
               fill
-              sizes="(max-width:768px) 50vw, 25vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className={`object-cover transition-all duration-500 ease-out group-hover:scale-105 ${
                 secondaryUrl ? "group-hover:opacity-0" : ""
               }`}
@@ -38,20 +39,20 @@ export function ProductCard({ product }: { product: CatalogListItem }) {
                 src={secondaryUrl}
                 alt={`${product.name} - detalle`}
                 fill
-                sizes="(max-width:768px) 50vw, 25vw"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 className="object-cover opacity-0 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-105"
               />
             )}
           </>
         ) : (
-          <div className="relative flex aspect-square items-center justify-center bg-gradient-to-br from-secondary via-muted to-white">
+          <div className="relative flex aspect-[4/5] items-center justify-center bg-gradient-to-br from-secondary via-muted to-white">
             <span className="font-display text-5xl font-bold text-primary/70">
               {product.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
 
-        {/* Badges */}
+        {/* Único badge superior */}
         <div className="absolute left-2.5 top-2.5 flex flex-col gap-1 z-10">
           {onSale && (
             <span className="rounded-full bg-[#161413] px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white shadow-sm uppercase">
@@ -71,21 +72,24 @@ export function ProductCard({ product }: { product: CatalogListItem }) {
         </span>
       </div>
 
-      <div className="space-y-1.5 p-4 bg-white">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{product.category.name}</p>
-        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground group-hover:text-primary transition-colors">
+      <div className="space-y-1.5 p-3.5 bg-white">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">{product.category.name}</p>
+        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary transition-colors">
           {product.name}
         </h3>
-        <div className="pt-1">
+        <div className="pt-0.5">
           <PriceTag
             price={price}
             compareAtPrice={onSale ? toNumber(product.compareAtPrice) : null}
-            discountPercent={getDiscountPercent(product)}
+            discountPercent={0}
             size="sm"
           />
+          <p className="text-[11px] text-muted-foreground pt-0.5">
+            3 cuotas de <strong className="text-foreground">{formatARS(Math.round(price / 3))}</strong>
+          </p>
         </div>
         {swatches.length > 0 && (
-          <div className="flex items-center gap-1.5 pt-2" aria-label={`${product.variants.length} tonos disponibles`}>
+          <div className="flex items-center gap-1.5 pt-1" aria-label={`${product.variants.length} tonos disponibles`}>
             {swatches.map((v) => (
               <span
                 key={v.id}

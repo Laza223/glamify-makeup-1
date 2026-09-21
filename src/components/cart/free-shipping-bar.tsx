@@ -18,9 +18,9 @@ export function FreeShippingBar({ subtotal, threshold }: { subtotal: number; thr
           )}
           <span>
             {hasFree ? (
-              <>¡Tenés <strong>Envío Gratis</strong> a todo el país! 🎉</>
+              <>¡Tenés <strong>Envío Gratis</strong> a todo el país!</>
             ) : (
-              <>Te faltan <strong className="text-primary font-bold">{formatARS(remaining)}</strong> para el envío gratis</>
+              <>Te faltan <strong className="text-primary font-bold">{formatARS(remaining)}</strong> para envío gratis</>
             )}
           </span>
         </span>

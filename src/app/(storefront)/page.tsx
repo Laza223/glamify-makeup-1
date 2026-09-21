@@ -9,6 +9,7 @@ import { filterVisibleInNav } from "@/lib/catalog/categories";
 import { buildWebSiteJsonLd, buildOrganizationJsonLd, serializeJsonLd } from "@/lib/seo/jsonld";
 import { appBaseUrl } from "@/lib/seo/url";
 import { ArrowRight } from "lucide-react";
+import { CategoryChipsNav } from "@/components/catalog/category-chips-nav";
 
 export default async function HomePage() {
   const [treeRaw, featuredRaw] = await Promise.all([getCategoryTree(), getFeaturedProducts(8)]);
@@ -24,6 +25,11 @@ export default async function HomePage() {
       {/* Banner Editorial Glamify con botones de acción */}
       <GlamifyWelcomeBanner />
 
+      {/* Chips de navegación rápida de categorías en mobile */}
+      <div className="md:hidden -mt-10">
+        <CategoryChipsNav categories={tree} />
+      </div>
+
       {/* Sección Especial Regalos: Regalá beauty, regalá Glamify */}
       <GiftSection />
 
@@ -34,7 +40,7 @@ export default async function HomePage() {
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-border/60 pb-3">
           <div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-wider text-foreground">
+            <h2 className="font-display text-2xl md:text-3xl font-normal text-foreground">
               Comprar por Categoría
             </h2>
             <p className="text-sm text-muted-foreground">Encontrá el producto ideal según tu rutina</p>
@@ -59,7 +65,7 @@ export default async function HomePage() {
                   <ProductImage src={cat.image} alt={cat.name} fallbackLabel={cat.name} className="rounded-none h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
                 <div className="p-3.5 bg-white text-center border-t border-border/40">
-                  <span className="block text-sm font-semibold tracking-wide uppercase text-foreground group-hover:text-primary transition-colors">
+                  <span className="block text-sm font-semibold tracking-wide text-foreground group-hover:text-primary transition-colors">
                     {cat.name}
                   </span>
                 </div>
@@ -74,7 +80,7 @@ export default async function HomePage() {
         <section className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-border/60 pb-3">
             <div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-wider text-foreground">
+              <h2 className="font-display text-2xl md:text-3xl font-normal text-foreground">
                 Los Más Elegidos
               </h2>
               <p className="text-sm text-muted-foreground">Favoritos virales de nuestra comunidad</p>

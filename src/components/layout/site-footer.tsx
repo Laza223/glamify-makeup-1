@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Logo } from "@/components/ui/logo";
 import { businessInfo } from "@/lib/legal/business-info";
 
@@ -33,6 +36,17 @@ const columns: Array<{ title: string; links: Array<{ label: string; href: string
 ];
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  const isCheckout = pathname.startsWith("/checkout");
+
+  if (isCheckout) {
+    return (
+      <footer className="mt-8 border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
+        <p>© {new Date().getFullYear()} Glamify Makeup. Pago 100% seguro procesado por Mercado Pago.</p>
+      </footer>
+    );
+  }
+
   return (
     <footer className="mt-16 border-t border-border/80 bg-white/95 backdrop-blur-md">
       <div className="container grid grid-cols-2 gap-8 py-12 text-sm text-muted-foreground md:grid-cols-4">

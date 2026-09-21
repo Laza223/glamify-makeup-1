@@ -13,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...c.children.map((s) => ({ url: absoluteUrl(`/tienda/${c.slug}/${s.slug}`), lastModified: now })),
   ]);
   const staticPages = [
+    "/arma-tu-kit",
     "/terminos",
     "/privacidad",
     "/arrepentimiento",

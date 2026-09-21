@@ -21,7 +21,7 @@ export default async function GraciasPage({ searchParams }: { searchParams: Prom
         <TrackOnMount event="purchase" props={{ orderNumber: order.orderNumber, total: Number(order.total) }} />
       )}
       {paid ? <CheckCircle2 className="mx-auto size-14 text-primary" /> : <Clock className="mx-auto size-14 text-muted-foreground" />}
-      <h1 className="mt-4 font-display text-2xl font-bold">{paid ? "¡Gracias por tu compra! 💄" : "Estamos confirmando tu pago"}</h1>
+      <h1 className="mt-4 font-display text-2xl font-bold">{paid ? "¡Gracias por tu compra!" : "Estamos confirmando tu pago"}</h1>
 
       {order ? (
         <>

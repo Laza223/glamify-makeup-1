@@ -55,3 +55,9 @@ coverage/
 # Antigravity agent local configs
 .agents/
 
+# Scratch & temporary assets
+scratch/
+fotos-categorias-nuevas/
+scripts/render_*.cjs
+scripts/test_*.cjs
+scripts/process_all_cutouts.py

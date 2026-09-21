@@ -18,15 +18,76 @@ interface SeedCategory {
 }
 
 const CATEGORIES: SeedCategory[] = [
-  { slug: "brochas-y-esponjas", name: "Brochas y Esponjas", skuPrefix: "BRO", order: 0, image: "/images/category_brochas_esponjas.jpg" },
-  { slug: "rubor", name: "Rubor", skuPrefix: "RUB", order: 1, image: "/images/category_rubor.jpg" },
-  { slug: "iluminador", name: "Iluminador", skuPrefix: "ILU", order: 2, image: "/images/category_iluminador.jpg" },
-  { slug: "pestanas", name: "Pestañas", skuPrefix: "PES", order: 3, image: "/images/category_pestanas.jpg" },
-  { slug: "labios", name: "Labios", skuPrefix: "LAB", order: 4, image: "/images/category_labios.jpg" },
-  { slug: "delineador", name: "Delineador", skuPrefix: "DEL", order: 5, image: "/images/category_delineador.jpg" },
-  { slug: "bases-y-correctores", name: "Bases y Correctores", skuPrefix: "BAS", order: 6, image: "/images/category_bases_correctores.jpg" },
-  { slug: "contorno", name: "Contorno", skuPrefix: "CON", order: 7, image: "/images/category_contorno.jpg" },
-  { slug: "otros", name: "Otros", skuPrefix: "OTR", order: 8, image: "/images/category_otros.jpg" },
+  {
+    slug: "brochas-y-esponjas",
+    name: "Brochas y Esponjas",
+    skuPrefix: "BRO",
+    order: 0,
+    image: "/images/category_brochas_esponjas.jpg",
+  },
+  {
+    slug: "rubor",
+    name: "Rubor",
+    skuPrefix: "RUB",
+    order: 1,
+    image: "/images/category_rubor.jpg",
+  },
+  {
+    slug: "iluminador",
+    name: "Iluminador",
+    skuPrefix: "ILU",
+    order: 2,
+    image: "/images/category_iluminador.jpg",
+  },
+  {
+    slug: "pestanas",
+    name: "Pestañas",
+    skuPrefix: "PES",
+    order: 3,
+    image: "/images/category_pestanas.jpg",
+  },
+  {
+    slug: "labios",
+    name: "Labios",
+    skuPrefix: "LAB",
+    order: 4,
+    image: "/images/category_labios.jpg",
+  },
+  {
+    slug: "delineador",
+    name: "Delineador",
+    skuPrefix: "DEL",
+    order: 5,
+    image: "/images/category_delineador.jpg",
+  },
+  {
+    slug: "bases-y-correctores",
+    name: "Bases y Correctores",
+    skuPrefix: "BAS",
+    order: 6,
+    image: "/images/category_bases_correctores.jpg",
+  },
+  {
+    slug: "contorno",
+    name: "Contorno",
+    skuPrefix: "CON",
+    order: 7,
+    image: "/images/category_contorno.jpg",
+  },
+  {
+    slug: "sombras",
+    name: "Sombras",
+    skuPrefix: "SOM",
+    order: 8,
+    image: "/images/category_sombras.jpg",
+  },
+  {
+    slug: "otros",
+    name: "Otros",
+    skuPrefix: "OTR",
+    order: 9,
+    image: "/images/category_otros.jpg",
+  },
 ];
 
 interface SeedVariant {
@@ -54,21 +115,43 @@ interface SeedProduct {
 
 const PRODUCTS: SeedProduct[] = [
   {
-    slug: "labial-mate-larga-duracion", name: "Labial Mate Larga Duración", categorySlug: "labios",
-    description: "Color intenso que dura todo el día, acabado mate aterciopelado y cómodo.",
-    basePrice: 3200, compareAtPrice: 3990, cost: 1400, weightGr: 25, isFeatured: true, heroRank: 1, tags: ["mate", "larga duración"],
+    slug: "labial-mate-larga-duracion",
+    name: "Labial Mate Larga Duración",
+    categorySlug: "labios",
+    description:
+      "Color intenso que dura todo el día, acabado mate aterciopelado y cómodo.",
+    basePrice: 3200,
+    compareAtPrice: 3990,
+    cost: 1400,
+    weightGr: 25,
+    isFeatured: true,
+    heroRank: 1,
+    tags: ["mate", "larga duración"],
     images: ["/images/product_lipstick.png"],
     variants: [
       { name: "Rojo Pasión", swatchHex: "#C0392B", stock: 18 },
       { name: "Fucsia Glam", swatchHex: "#FF2E93", stock: 9 },
-      { name: "Nude Rosado", swatchHex: "#C8A27C", stock: 2, lowStockThreshold: 3 },
+      {
+        name: "Nude Rosado",
+        swatchHex: "#C8A27C",
+        stock: 2,
+        lowStockThreshold: 3,
+      },
       { name: "Vino", swatchHex: "#6E0B3F", stock: 0 },
     ],
   },
   {
-    slug: "gloss-brillo-humedo", name: "Gloss Brillo Húmedo", categorySlug: "labios",
-    description: "Brillo espejo no pegajoso con un toque de color. Efecto labios jugosos.",
-    basePrice: 2500, cost: 1000, weightGr: 22, isFeatured: true, heroRank: 2, tags: ["brillo"],
+    slug: "gloss-brillo-humedo",
+    name: "Gloss Brillo Húmedo",
+    categorySlug: "labios",
+    description:
+      "Brillo espejo no pegajoso con un toque de color. Efecto labios jugosos.",
+    basePrice: 2500,
+    cost: 1000,
+    weightGr: 22,
+    isFeatured: true,
+    heroRank: 2,
+    tags: ["brillo"],
     images: ["/images/product_lipstick.png"],
     variants: [
       { name: "Transparente", swatchHex: "#F4E7EE", stock: 25 },
@@ -77,9 +160,17 @@ const PRODUCTS: SeedProduct[] = [
     ],
   },
   {
-    slug: "mascara-volumen-extremo", name: "Máscara de Pestañas Volumen Extremo", categorySlug: "pestanas",
-    description: "Pestañas con volumen dramático sin grumos. Cepillo de fibras finas.",
-    basePrice: 4100, cost: 1800, weightGr: 30, isFeatured: true, heroRank: 3, tags: ["volumen"],
+    slug: "mascara-volumen-extremo",
+    name: "Máscara de Pestañas Volumen Extremo",
+    categorySlug: "pestanas",
+    description:
+      "Pestañas con volumen dramático sin grumos. Cepillo de fibras finas.",
+    basePrice: 4100,
+    cost: 1800,
+    weightGr: 30,
+    isFeatured: true,
+    heroRank: 3,
+    tags: ["volumen"],
     images: ["/images/product_mascara.png"],
     variants: [
       { name: "Negro Intenso", swatchHex: "#111111", stock: 20 },
@@ -87,27 +178,53 @@ const PRODUCTS: SeedProduct[] = [
     ],
   },
   {
-    slug: "paleta-sombras-glam-12", name: "Paleta de Sombras Glam 12 Tonos", categorySlug: "otros",
-    description: "12 tonos mate y shimmer altamente pigmentados para looks de día y noche.",
-    basePrice: 6900, compareAtPrice: 8500, cost: 3000, weightGr: 120, isFeatured: true, heroRank: 4, tags: ["paleta", "shimmer"],
+    slug: "paleta-sombras-glam-12",
+    name: "Paleta de Sombras Glam 12 Tonos",
+    categorySlug: "sombras",
+    description:
+      "12 tonos mate y shimmer altamente pigmentados para looks de día y noche.",
+    basePrice: 6900,
+    compareAtPrice: 8500,
+    cost: 3000,
+    weightGr: 120,
+    isFeatured: true,
+    heroRank: 4,
+    tags: ["paleta", "shimmer"],
     images: ["/images/product_eyeshadow.png"],
     variants: [{ name: "Único", swatchHex: "#C8A27C", stock: 11 }],
   },
   {
-    slug: "rubor-compacto-sedoso", name: "Rubor Compacto Sedoso", categorySlug: "rubor",
-    description: "Color natural y difuminable, acabado satinado que ilumina el rostro.",
-    basePrice: 2990, cost: 1200, weightGr: 28, tags: ["rubor"],
+    slug: "rubor-compacto-sedoso",
+    name: "Rubor Compacto Sedoso",
+    categorySlug: "rubor",
+    description:
+      "Color natural y difuminable, acabado satinado que ilumina el rostro.",
+    basePrice: 2990,
+    cost: 1200,
+    weightGr: 28,
+    tags: ["rubor"],
     images: ["/images/product_blush.png"],
     variants: [
       { name: "Durazno", swatchHex: "#F4A07A", stock: 16 },
       { name: "Rosa Suave", swatchHex: "#FF9ED1", stock: 8 },
-      { name: "Coral Cálido", swatchHex: "#FF7F6E", stock: 1, lowStockThreshold: 3 },
+      {
+        name: "Coral Cálido",
+        swatchHex: "#FF7F6E",
+        stock: 1,
+        lowStockThreshold: 3,
+      },
     ],
   },
   {
-    slug: "base-fluida-hd", name: "Base Fluida HD", categorySlug: "bases-y-correctores",
-    description: "Cobertura media a alta, acabado natural HD de larga duración.",
-    basePrice: 5500, cost: 2400, weightGr: 60, tags: ["base", "hd"],
+    slug: "base-fluida-hd",
+    name: "Base Fluida HD",
+    categorySlug: "bases-y-correctores",
+    description:
+      "Cobertura media a alta, acabado natural HD de larga duración.",
+    basePrice: 5500,
+    cost: 2400,
+    weightGr: 60,
+    tags: ["base", "hd"],
     images: ["/images/product_foundation.png"],
     variants: [
       { name: "Tono 01 Claro", swatchHex: "#F2D6C2", stock: 12 },
@@ -117,23 +234,42 @@ const PRODUCTS: SeedProduct[] = [
     ],
   },
   {
-    slug: "set-brochas-x5", name: "Set de Brochas Profesionales x5", categorySlug: "brochas-y-esponjas",
-    description: "5 brochas esenciales de cerda suave para rostro y ojos. Incluye estuche.",
-    basePrice: 7800, compareAtPrice: 9900, cost: 3500, weightGr: 200, tags: ["set", "brochas", "order-bump"],
+    slug: "set-brochas-x5",
+    name: "Set de Brochas Profesionales x5",
+    categorySlug: "brochas-y-esponjas",
+    description:
+      "5 brochas esenciales de cerda suave para rostro y ojos. Incluye estuche.",
+    basePrice: 7800,
+    compareAtPrice: 9900,
+    cost: 3500,
+    weightGr: 200,
+    tags: ["set", "brochas", "order-bump"],
     images: ["/images/product_brushes.png"],
     variants: [{ name: "Rosa", swatchHex: "#FF2E93", stock: 5 }],
   },
   {
-    slug: "delineador-liquido-precision", name: "Delineador Líquido Precisión", categorySlug: "delineador",
-    description: "Punta ultrafina para un trazo preciso. Negro intenso a prueba de smudge.",
-    basePrice: 3300, cost: 1300, weightGr: 18, tags: ["delineador"],
+    slug: "delineador-liquido-precision",
+    name: "Delineador Líquido Precisión",
+    categorySlug: "delineador",
+    description:
+      "Punta ultrafina para un trazo preciso. Negro intenso a prueba de smudge.",
+    basePrice: 3300,
+    cost: 1300,
+    weightGr: 18,
+    tags: ["delineador"],
     images: ["/images/product_mascara.png"],
     variants: [{ name: "Negro", swatchHex: "#111111", stock: 22 }],
   },
   {
-    slug: "iluminador-liquido-glow", name: "Iluminador Líquido Glow", categorySlug: "iluminador",
-    description: "Glow húmedo de acabado dorado-rosado. Solo o mezclado con la base.",
-    basePrice: 4200, cost: 1700, weightGr: 35, tags: ["glow", "iluminador"],
+    slug: "iluminador-liquido-glow",
+    name: "Iluminador Líquido Glow",
+    categorySlug: "iluminador",
+    description:
+      "Glow húmedo de acabado dorado-rosado. Solo o mezclado con la base.",
+    basePrice: 4200,
+    cost: 1700,
+    weightGr: 35,
+    tags: ["glow", "iluminador"],
     images: ["/images/product_blush.png"],
     variants: [
       { name: "Champagne", swatchHex: "#EAD3A2", stock: 10 },
@@ -141,20 +277,37 @@ const PRODUCTS: SeedProduct[] = [
     ],
   },
   {
-    slug: "labial-cremoso-nude", name: "Labial Cremoso Nude", categorySlug: "labios",
-    description: "Textura cremosa hidratante con tonos nude versátiles para todos los días.",
-    basePrice: 3000, cost: 1250, weightGr: 24, tags: ["cremoso", "nude"],
+    slug: "labial-cremoso-nude",
+    name: "Labial Cremoso Nude",
+    categorySlug: "labios",
+    description:
+      "Textura cremosa hidratante con tonos nude versátiles para todos los días.",
+    basePrice: 3000,
+    cost: 1250,
+    weightGr: 24,
+    tags: ["cremoso", "nude"],
     images: ["/images/product_lipstick.png"],
     variants: [
       { name: "Nude Cálido", swatchHex: "#C8927A", stock: 13 },
       { name: "Rosa Maquillaje", swatchHex: "#D98E9E", stock: 9 },
-      { name: "Caramelo", swatchHex: "#B97A52", stock: 2, lowStockThreshold: 3 },
+      {
+        name: "Caramelo",
+        swatchHex: "#B97A52",
+        stock: 2,
+        lowStockThreshold: 3,
+      },
     ],
   },
   {
-    slug: "esponja-maquillaje-blender", name: "Esponja de Maquillaje Blender", categorySlug: "brochas-y-esponjas",
-    description: "Esponja sin látex que difumina la base para un acabado impecable.",
-    basePrice: 1800, cost: 600, weightGr: 12, tags: ["esponja", "order-bump"],
+    slug: "esponja-maquillaje-blender",
+    name: "Esponja de Maquillaje Blender",
+    categorySlug: "brochas-y-esponjas",
+    description:
+      "Esponja sin látex que difumina la base para un acabado impecable.",
+    basePrice: 1800,
+    cost: 600,
+    weightGr: 12,
+    tags: ["esponja", "order-bump"],
     images: ["/images/product_brushes.png"],
     variants: [
       { name: "Rosa", swatchHex: "#FF9ED1", stock: 30 },
@@ -162,9 +315,15 @@ const PRODUCTS: SeedProduct[] = [
     ],
   },
   {
-    slug: "primer-facial-poro-cero", name: "Primer Facial Poro Cero", categorySlug: "bases-y-correctores",
-    description: "Prebase matificante que difumina poros y prolonga la duración del maquillaje.",
-    basePrice: 4800, cost: 2000, weightGr: 40, tags: ["primer"],
+    slug: "primer-facial-poro-cero",
+    name: "Primer Facial Poro Cero",
+    categorySlug: "bases-y-correctores",
+    description:
+      "Prebase matificante que difumina poros y prolonga la duración del maquillaje.",
+    basePrice: 4800,
+    cost: 2000,
+    weightGr: 40,
+    tags: ["primer"],
     images: ["/images/product_foundation.png"],
     variants: [{ name: "Único", swatchHex: "#F4E7EE", stock: 6 }],
   },
@@ -175,8 +334,21 @@ async function upsertCategories(): Promise<Map<string, string>> {
   for (const parent of CATEGORIES) {
     const p = await prisma.category.upsert({
       where: { slug: parent.slug },
-      update: { name: parent.name, skuPrefix: parent.skuPrefix, order: parent.order, image: parent.image ?? null, parentId: null, active: true },
-      create: { slug: parent.slug, name: parent.name, skuPrefix: parent.skuPrefix, order: parent.order, image: parent.image ?? null },
+      update: {
+        name: parent.name,
+        skuPrefix: parent.skuPrefix,
+        order: parent.order,
+        image: parent.image ?? null,
+        parentId: null,
+        active: true,
+      },
+      create: {
+        slug: parent.slug,
+        name: parent.name,
+        skuPrefix: parent.skuPrefix,
+        order: parent.order,
+        image: parent.image ?? null,
+      },
     });
     idBySlug.set(parent.slug, p.id);
   }
@@ -194,19 +366,37 @@ async function upsertProducts(idBySlug: Map<string, string>): Promise<void> {
   const seqByPrefix = new Map<string, number>();
   for (const p of PRODUCTS) {
     const categoryId = idBySlug.get(p.categorySlug);
-    if (!categoryId) throw new Error(`Categoría inexistente: ${p.categorySlug}`);
+    if (!categoryId)
+      throw new Error(`Categoría inexistente: ${p.categorySlug}`);
     const product = await prisma.product.upsert({
       where: { slug: p.slug },
       update: {
-        name: p.name, description: p.description, categoryId,
-        basePrice: p.basePrice, compareAtPrice: p.compareAtPrice ?? null, cost: p.cost, weightGr: p.weightGr,
-        isFeatured: p.isFeatured ?? false, heroRank: p.heroRank ?? null, tags: p.tags ?? [], active: true, deletedAt: null,
+        name: p.name,
+        description: p.description,
+        categoryId,
+        basePrice: p.basePrice,
+        compareAtPrice: p.compareAtPrice ?? null,
+        cost: p.cost,
+        weightGr: p.weightGr,
+        isFeatured: p.isFeatured ?? false,
+        heroRank: p.heroRank ?? null,
+        tags: p.tags ?? [],
+        active: true,
+        deletedAt: null,
         images: p.images ?? [],
       },
       create: {
-        slug: p.slug, name: p.name, description: p.description, categoryId,
-        basePrice: p.basePrice, compareAtPrice: p.compareAtPrice ?? null, cost: p.cost, weightGr: p.weightGr,
-        isFeatured: p.isFeatured ?? false, heroRank: p.heroRank ?? null, tags: p.tags ?? [],
+        slug: p.slug,
+        name: p.name,
+        description: p.description,
+        categoryId,
+        basePrice: p.basePrice,
+        compareAtPrice: p.compareAtPrice ?? null,
+        cost: p.cost,
+        weightGr: p.weightGr,
+        isFeatured: p.isFeatured ?? false,
+        heroRank: p.heroRank ?? null,
+        tags: p.tags ?? [],
         images: p.images ?? [],
       },
     });
@@ -217,11 +407,21 @@ async function upsertProducts(idBySlug: Map<string, string>): Promise<void> {
       seqByPrefix.set(prefix, seq);
       const sku = generateSku(prefix, seq);
       const data: Prisma.ProductVariantUncheckedCreateInput = {
-        productId: product.id, name: v.name, sku, swatchHex: v.swatchHex ?? null,
-        priceOverride: v.priceOverride ?? null, stock: v.stock, lowStockThreshold: v.lowStockThreshold ?? 3,
-        active: true, order: order++,
+        productId: product.id,
+        name: v.name,
+        sku,
+        swatchHex: v.swatchHex ?? null,
+        priceOverride: v.priceOverride ?? null,
+        stock: v.stock,
+        lowStockThreshold: v.lowStockThreshold ?? 3,
+        active: true,
+        order: order++,
       };
-      await prisma.productVariant.upsert({ where: { sku }, update: { ...data }, create: { ...data } });
+      await prisma.productVariant.upsert({
+        where: { sku },
+        update: { ...data },
+        create: { ...data },
+      });
     }
   }
 }
@@ -255,10 +455,36 @@ interface SeedZone {
 const ZONES: SeedZone[] = [
   // Precios a domicilio (methodFactor aplica el descuento de sucursal, ver quote.ts). Recalibrados
   // con cotizaciones reales en vivo de MiCorreo PAQ.AR Clásico — ver docs/decisions/0001-shipping-provider.md.
-  { name: "AMBA (CABA + GBA)", matchType: "cpRange", cpFrom: "1000", cpTo: "1900", price: 9000, order: 0 },
-  { name: "Buenos Aires interior", matchType: "province", provinces: ["Buenos Aires"], price: 9000, order: 1 },
-  { name: "Centro (Córdoba, Santa Fe, Entre Ríos)", matchType: "province", provinces: ["Córdoba", "Santa Fe", "Entre Ríos"], price: 9000, order: 2 },
-  { name: "Resto del país", matchType: "cpRange", cpFrom: "0", cpTo: "9999", price: 10000, order: 3 },
+  {
+    name: "AMBA (CABA + GBA)",
+    matchType: "cpRange",
+    cpFrom: "1000",
+    cpTo: "1900",
+    price: 9000,
+    order: 0,
+  },
+  {
+    name: "Buenos Aires interior",
+    matchType: "province",
+    provinces: ["Buenos Aires"],
+    price: 9000,
+    order: 1,
+  },
+  {
+    name: "Centro (Córdoba, Santa Fe, Entre Ríos)",
+    matchType: "province",
+    provinces: ["Córdoba", "Santa Fe", "Entre Ríos"],
+    price: 9000,
+    order: 2,
+  },
+  {
+    name: "Resto del país",
+    matchType: "cpRange",
+    cpFrom: "0",
+    cpTo: "9999",
+    price: 10000,
+    order: 3,
+  },
 ];
 
 async function upsertZones(): Promise<void> {
@@ -267,8 +493,14 @@ async function upsertZones(): Promise<void> {
   for (const z of ZONES) {
     await prisma.shippingZone.create({
       data: {
-        name: z.name, matchType: z.matchType, provinces: z.provinces ?? [],
-        cpFrom: z.cpFrom ?? null, cpTo: z.cpTo ?? null, price: z.price, order: z.order, active: true,
+        name: z.name,
+        matchType: z.matchType,
+        provinces: z.provinces ?? [],
+        cpFrom: z.cpFrom ?? null,
+        cpTo: z.cpTo ?? null,
+        price: z.price,
+        order: z.order,
+        active: true,
       },
     });
   }
@@ -285,18 +517,46 @@ interface SeedCoupon {
 }
 const COUPONS: SeedCoupon[] = [
   { code: "GLAM10", type: "percentage", value: 10, scope: "all" },
-  { code: "BIENVENIDA", type: "fixed", value: 1000, scope: "all", minSubtotal: 5000 },
+  {
+    code: "BIENVENIDA",
+    type: "fixed",
+    value: 1000,
+    scope: "all",
+    minSubtotal: 5000,
+  },
   { code: "ENVIOGRATIS", type: "free_shipping", value: 0, scope: "all" },
   // Cupón del exit-intent (NEXT_PUBLIC_WELCOME_COUPON_CODE). 1ª compra: 10% off, 1 uso por clienta.
-  { code: "BIENVENIDA10", type: "percentage", value: 10, scope: "all", perCustomerLimit: 1 },
+  {
+    code: "BIENVENIDA10",
+    type: "percentage",
+    value: 10,
+    scope: "all",
+    perCustomerLimit: 1,
+  },
 ];
 
 async function upsertCoupons(): Promise<void> {
   for (const c of COUPONS) {
     await prisma.coupon.upsert({
       where: { code: c.code },
-      update: { type: c.type, value: c.value, scope: c.scope ?? "all", minSubtotal: c.minSubtotal ?? null, maxUses: c.maxUses ?? null, perCustomerLimit: c.perCustomerLimit ?? null, active: true },
-      create: { code: c.code, type: c.type, value: c.value, scope: c.scope ?? "all", minSubtotal: c.minSubtotal ?? null, maxUses: c.maxUses ?? null, perCustomerLimit: c.perCustomerLimit ?? null },
+      update: {
+        type: c.type,
+        value: c.value,
+        scope: c.scope ?? "all",
+        minSubtotal: c.minSubtotal ?? null,
+        maxUses: c.maxUses ?? null,
+        perCustomerLimit: c.perCustomerLimit ?? null,
+        active: true,
+      },
+      create: {
+        code: c.code,
+        type: c.type,
+        value: c.value,
+        scope: c.scope ?? "all",
+        minSubtotal: c.minSubtotal ?? null,
+        maxUses: c.maxUses ?? null,
+        perCustomerLimit: c.perCustomerLimit ?? null,
+      },
     });
   }
 }
@@ -308,12 +568,19 @@ const E2E_ORDER_NUMBER = "GLM-E2E001";
 async function upsertE2eOrder(): Promise<void> {
   // Clienta e2e (si fue seedeada con `pnpm customer:create`): vincula el pedido a su cuenta
   // para que pueda dejar una reseña con compra verificada sobre el producto del pedido.
-  const e2eEmail = process.env.CUSTOMER_EMAIL?.trim().toLowerCase() ?? "clienta.e2e@example.com";
-  const e2eCustomer = await prisma.customer.findUnique({ where: { email: e2eEmail } });
+  const e2eEmail =
+    process.env.CUSTOMER_EMAIL?.trim().toLowerCase() ??
+    "clienta.e2e@example.com";
+  const e2eCustomer = await prisma.customer.findUnique({
+    where: { email: e2eEmail },
+  });
 
   // Variante real del seed para snapshots coherentes.
   const variant = await prisma.productVariant.findFirst({
-    where: { product: { slug: "labial-mate-larga-duracion" }, stock: { gt: 0 } },
+    where: {
+      product: { slug: "labial-mate-larga-duracion" },
+      stock: { gt: 0 },
+    },
     orderBy: { order: "asc" },
     include: { product: true },
   });
@@ -328,7 +595,9 @@ async function upsertE2eOrder(): Promise<void> {
   const shippingCost = 2500;
   const total = subtotal + shippingCost;
 
-  const existing = await prisma.order.findUnique({ where: { orderNumber: E2E_ORDER_NUMBER } });
+  const existing = await prisma.order.findUnique({
+    where: { orderNumber: E2E_ORDER_NUMBER },
+  });
 
   const order = existing
     ? await prisma.order.update({
@@ -339,11 +608,19 @@ async function upsertE2eOrder(): Promise<void> {
           contactEmail: "e2e@example.com",
           contactPhone: "1100000000",
           shippingAddress: {
-            cp: "1414", province: "CABA",
-            street: "Calle Falsa", number: "123", floorApt: null, city: "CABA", notes: null,
+            cp: "1414",
+            province: "CABA",
+            street: "Calle Falsa",
+            number: "123",
+            floorApt: null,
+            city: "CABA",
+            notes: null,
           },
           shippingMethod: "domicilio",
-          subtotal, shippingCost, discountTotal: 0, total,
+          subtotal,
+          shippingCost,
+          discountTotal: 0,
+          total,
           status: "paid",
         },
       })
@@ -355,11 +632,19 @@ async function upsertE2eOrder(): Promise<void> {
           contactEmail: "e2e@example.com",
           contactPhone: "1100000000",
           shippingAddress: {
-            cp: "1414", province: "CABA",
-            street: "Calle Falsa", number: "123", floorApt: null, city: "CABA", notes: null,
+            cp: "1414",
+            province: "CABA",
+            street: "Calle Falsa",
+            number: "123",
+            floorApt: null,
+            city: "CABA",
+            notes: null,
           },
           shippingMethod: "domicilio",
-          subtotal, shippingCost, discountTotal: 0, total,
+          subtotal,
+          shippingCost,
+          discountTotal: 0,
+          total,
           status: "paid",
         },
       });
@@ -382,26 +667,61 @@ async function upsertE2eOrder(): Promise<void> {
   // Pago aprobado de muestra (idempotente por orderId; recreamos).
   await prisma.payment.deleteMany({ where: { orderId: order.id } });
   await prisma.payment.create({
-    data: { orderId: order.id, provider: "mercadopago", status: "approved", amount: total },
+    data: {
+      orderId: order.id,
+      provider: "mercadopago",
+      status: "approved",
+      amount: total,
+    },
   });
 }
 
 async function upsertCombo(): Promise<void> {
   // Combo "Dúo Labios Glam": 1 labial mate + 1 gloss. Descuenta stock de sus componentes al pagarse.
-  const labial = await prisma.productVariant.findFirst({ where: { product: { slug: "labial-mate-larga-duracion" }, stock: { gt: 0 } }, orderBy: { order: "asc" } });
-  const gloss = await prisma.productVariant.findFirst({ where: { product: { slug: "gloss-brillo-humedo" }, stock: { gt: 0 } }, orderBy: { order: "asc" } });
-  if (!labial || !gloss) { console.warn("⚠️  Combo no creado: faltan variantes con stock."); return; }
+  const labial = await prisma.productVariant.findFirst({
+    where: {
+      product: { slug: "labial-mate-larga-duracion" },
+      stock: { gt: 0 },
+    },
+    orderBy: { order: "asc" },
+  });
+  const gloss = await prisma.productVariant.findFirst({
+    where: { product: { slug: "gloss-brillo-humedo" }, stock: { gt: 0 } },
+    orderBy: { order: "asc" },
+  });
+  if (!labial || !gloss) {
+    console.warn("⚠️  Combo no creado: faltan variantes con stock.");
+    return;
+  }
   const combo = await prisma.combo.upsert({
     where: { slug: "duo-labios-glam" },
-    update: { name: "Dúo Labios Glam", description: "Labial mate + gloss a precio especial.", comboPrice: 4990, active: true },
-    create: { slug: "duo-labios-glam", name: "Dúo Labios Glam", description: "Labial mate + gloss a precio especial.", comboPrice: 4990, images: [] },
+    update: {
+      name: "Dúo Labios Glam",
+      description: "Labial mate + gloss a precio especial.",
+      comboPrice: 4990,
+      active: true,
+    },
+    create: {
+      slug: "duo-labios-glam",
+      name: "Dúo Labios Glam",
+      description: "Labial mate + gloss a precio especial.",
+      comboPrice: 4990,
+      images: [],
+    },
   });
   await prisma.comboItem.deleteMany({ where: { comboId: combo.id } });
-  await prisma.comboItem.createMany({ data: [{ comboId: combo.id, variantId: labial.id, qty: 1 }, { comboId: combo.id, variantId: gloss.id, qty: 1 }] });
+  await prisma.comboItem.createMany({
+    data: [
+      { comboId: combo.id, variantId: labial.id, qty: 1 },
+      { comboId: combo.id, variantId: gloss.id, qty: 1 },
+    ],
+  });
 }
 
 async function main(): Promise<void> {
-  await confirmProdWrite("sembrar el catálogo de prueba (borra y recrea zonas de envío, crea el pedido GLM-E2E001)");
+  await confirmProdWrite(
+    "sembrar el catálogo de prueba (borra y recrea zonas de envío, crea el pedido GLM-E2E001)",
+  );
   console.log("🌱 Seeding catálogo Glamify Makeup…");
   const idBySlug = await upsertCategories();
   await upsertProducts(idBySlug);
@@ -418,7 +738,9 @@ async function main(): Promise<void> {
     prisma.shippingZone.count(),
     prisma.order.count(),
   ]);
-  console.log(`✅ Seed listo: ${cats} categorías, ${prods} productos, ${vars} variantes, ${coups} cupones, ${zones} zonas, ${orders} pedidos.`);
+  console.log(
+    `✅ Seed listo: ${cats} categorías, ${prods} productos, ${vars} variantes, ${coups} cupones, ${zones} zonas, ${orders} pedidos.`,
+  );
 }
 
 main()

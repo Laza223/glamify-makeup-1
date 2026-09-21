@@ -17,7 +17,7 @@ export default async function CuentaHome() {
 
   return (
     <div className="space-y-6">
-      <p className="text-muted-foreground">Hola{customer.name ? `, ${customer.name}` : ""} 👋</p>
+      <p className="text-muted-foreground">Hola{customer.name ? `, ${customer.name}` : ""}</p>
       <div className="grid gap-4 sm:grid-cols-2">
         <Link href="/cuenta/pedidos" className="rounded-2xl border border-border p-4 shadow-soft">
           <p className="text-sm text-muted-foreground">Últimos pedidos</p>

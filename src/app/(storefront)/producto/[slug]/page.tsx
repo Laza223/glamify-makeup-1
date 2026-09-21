@@ -164,7 +164,7 @@ export default async function ProductoPage({ params }: { params: Promise<{ slug:
 
         {customer && alreadyReviewed ? (
           <p className="text-sm text-muted-foreground bg-secondary/50 rounded-xl p-3">
-            Ya dejaste tu reseña sobre este producto. ¡Muchas gracias por tu recomendación! ✨
+            Ya dejaste tu reseña sobre este producto. ¡Muchas gracias por tu recomendación!
           </p>
         ) : (
           <ReviewForm productId={product.id} slug={product.slug} isLoggedIn={Boolean(customer)} />
@@ -173,7 +173,7 @@ export default async function ProductoPage({ params }: { params: Promise<{ slug:
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {reviews.length === 0 ? (
             <p className="col-span-full text-sm text-muted-foreground rounded-2xl border border-dashed border-border p-6 text-center">
-              Todavía no hay reseñas para este producto. ¡Sé la primera en compartir tu experiencia! ✨
+              Todavía no hay reseñas para este producto. ¡Sé la primera en compartir tu experiencia!
             </p>
           ) : (
             reviews.map((r) => <ReviewCard key={r.id} review={r} />)

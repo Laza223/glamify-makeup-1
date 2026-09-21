@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { parseProductListParams } from "@/lib/catalog/filters";
-import { getProductList } from "@/lib/catalog/queries";
+import { getProductList, getCategoryTree } from "@/lib/catalog/queries";
+import { filterVisibleInNav } from "@/lib/catalog/categories";
 import { ProductListView } from "@/components/catalog/product-list-view";
 
 export const metadata: Metadata = {
@@ -13,7 +14,10 @@ export default async function TiendaPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const params = parseProductListParams(await searchParams);
+  const [params, tree] = await Promise.all([
+    parseProductListParams(await searchParams),
+    getCategoryTree().then((t) => filterVisibleInNav(t)),
+  ]);
   const result = await getProductList(params, null);
-  return <ProductListView title="Tienda" result={result} />;
+  return <ProductListView title="Tienda" result={result} categories={tree} />;
 }

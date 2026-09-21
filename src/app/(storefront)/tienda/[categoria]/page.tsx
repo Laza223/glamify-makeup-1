@@ -22,7 +22,7 @@ export default async function CategoriaPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { categoria } = await params;
-  const { resolved } = await resolveCategoryPath(categoria);
+  const { resolved, tree } = await resolveCategoryPath(categoria);
   if (!resolved) notFound();
 
   const listParams = parseProductListParams(await searchParams, { categorySlug: categoria });
@@ -48,7 +48,12 @@ export default async function CategoriaPage({
           </ul>
         </nav>
       )}
-      <ProductListView title={resolved.category.name} result={result} />
+      <ProductListView
+        title={resolved.category.name}
+        result={result}
+        categories={tree.filter((c) => c.showInMenu)}
+        activeSlug={resolved.category.slug}
+      />
     </div>
   );
 }

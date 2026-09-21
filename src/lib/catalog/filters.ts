@@ -10,6 +10,7 @@ export interface ProductListParams {
   subcategorySlug?: string;
   minPrice?: number;
   maxPrice?: number;
+  search?: string;
   onSale: boolean;
   inStockOnly: boolean;
   sort: SortKey;
@@ -35,11 +36,13 @@ export function parseProductListParams(
   const sort: SortKey = sortRaw && SORT_KEYS.includes(sortRaw) ? sortRaw : "relevancia";
   const pageParsed = toNonNegInt(firstStr(raw.page));
   const page = pageParsed && pageParsed >= 1 ? pageParsed : 1;
+  const q = firstStr(raw.q)?.trim();
   return {
     categorySlug: opts?.categorySlug,
     subcategorySlug: opts?.subcategorySlug,
     minPrice: toNonNegInt(firstStr(raw.min)),
     maxPrice: toNonNegInt(firstStr(raw.max)),
+    search: q && q.length > 0 ? q : undefined,
     onSale: firstStr(raw.oferta) === "1",
     inStockOnly: firstStr(raw.disponible) === "1",
     sort,
@@ -57,12 +60,24 @@ export function buildProductWhere(
 ): Prisma.ProductWhereInput {
   const where: Prisma.ProductWhereInput = { active: true, deletedAt: null };
   if (categoryIds && categoryIds.length > 0) {
-    // Categoría primaria O adicional (tabla de asociación `categories`). Si en el futuro se agrega
-    // otro filtro que necesite su propio `where.OR`, hay que combinarlos: este es el único hoy.
+    // Categoría primaria O adicional (tabla de asociación `categories`).
     where.OR = [
       { categoryId: { in: categoryIds } },
       { categories: { some: { categoryId: { in: categoryIds } } } },
     ];
+  }
+  if (params.search) {
+    const searchConditions: Prisma.ProductWhereInput[] = [
+      { name: { contains: params.search, mode: "insensitive" } },
+      { description: { contains: params.search, mode: "insensitive" } },
+      { tags: { has: params.search.toLowerCase() } },
+    ];
+    if (where.OR) {
+      where.AND = [{ OR: where.OR }, { OR: searchConditions }];
+      delete where.OR;
+    } else {
+      where.OR = searchConditions;
+    }
   }
   if (params.minPrice !== undefined || params.maxPrice !== undefined) {
     where.basePrice = {
